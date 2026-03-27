@@ -12,7 +12,9 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "stylelint": "stylelint \"**/*.{css,scss,vue}\"",
-    "stylelint:fix": "stylelint \"**/*.{css,scss,vue}\" --fix"
+    "stylelint:fix": "stylelint \"**/*.{css,scss,vue}\" --fix",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.11.3",

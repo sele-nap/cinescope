@@ -5,6 +5,10 @@
     </div>
 
     <template v-else-if="movie">
+      <div class="movie-detail__nav">
+        <button class="movie-detail__back" @click="router.back()">← Retour</button>
+      </div>
+
       <div class="movie-detail__backdrop">
         <img
           v-if="getImageUrl(movie.backdrop_path, 'original')"
@@ -80,6 +84,7 @@
 
 <script setup lang="ts">
 const route = useRoute()
+const router = useRouter()
 const { fetchMovieDetails, fetchMovieCredits, getImageUrl } = useTmdb()
 
 const id = Number(route.params.id)
@@ -107,6 +112,28 @@ useSeoMeta({
 .movie-detail {
   min-height: 100vh;
   position: relative;
+
+  &__nav {
+    position: relative;
+    z-index: 2;
+    padding: 1.25rem 2rem 0;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  &__back {
+    background: none;
+    border: none;
+    color: $color-text-muted;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    transition: color $transition-base;
+
+    &:hover {
+      color: $color-text;
+    }
+  }
 
   &__loading {
     display: flex;

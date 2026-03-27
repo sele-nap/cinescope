@@ -18,8 +18,8 @@ export function useTmdb() {
     return fetchTmdb<TmdbResponse<Movie>>('movie/popular', { page })
   }
 
-  function fetchTrending(timeWindow: 'day' | 'week' = 'week') {
-    return fetchTmdb<TmdbResponse<Movie>>(`trending/movie/${timeWindow}`)
+  function fetchTrending(timeWindow: 'day' | 'week' = 'week', page = 1) {
+    return fetchTmdb<TmdbResponse<Movie>>(`trending/movie/${timeWindow}`, { page })
   }
 
   function searchMovies(query: string, page = 1) {

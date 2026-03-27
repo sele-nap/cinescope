@@ -62,10 +62,8 @@
           </NuxtLink>
         </div>
 
-        <div v-if="hasMorePages" class="home__load-more">
-          <button class="home__load-more-btn" :disabled="isLoading" @click="loadMore">
-            {{ isLoading ? 'Chargement…' : 'Voir plus' }}
-          </button>
+        <div ref="sentinel" class="home__sentinel">
+          <div v-if="isLoading && movies.length > 0" class="home__spinner home__spinner--inline" />
         </div>
       </div>
     </section>
@@ -73,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDebounceFn } from '@vueuse/core'
+import { useDebounceFn, useIntersectionObserver } from '@vueuse/core'
 import type { Movie } from '~/types/movie'
 
 const { fetchTrending, searchMovies, getImageUrl } = useTmdb()
@@ -84,6 +82,8 @@ const isLoading = ref(false)
 const currentPage = ref(1)
 const totalPages = ref(1)
 
+const sentinel = ref<HTMLElement | null>(null)
+
 const isSearching = computed(() => searchQuery.value.trim().length > 0)
 const hasMorePages = computed(() => currentPage.value < totalPages.value)
 
@@ -92,6 +92,7 @@ async function loadTrending() {
   const data = await fetchTrending('week')
   movies.value = data.results
   totalPages.value = data.total_pages
+  currentPage.value = 1
   isLoading.value = false
 }
 
@@ -99,14 +100,17 @@ async function loadMore() {
   if (!hasMorePages.value || isLoading.value) return
   isLoading.value = true
   const nextPage = currentPage.value + 1
-  const fetcher = isSearching.value
+  const data = await (isSearching.value
     ? searchMovies(searchQuery.value, nextPage)
-    : fetchTrending('week')
-  const data = await fetcher
+    : fetchTrending('week', nextPage))
   movies.value.push(...data.results)
   currentPage.value = nextPage
   isLoading.value = false
 }
+
+useIntersectionObserver(sentinel, ([entry]) => {
+  if (entry.isIntersecting) loadMore()
+})
 
 const doSearch = useDebounceFn(async (query: string) => {
   if (!query.trim()) {
@@ -258,31 +262,17 @@ await loadTrending()
     gap: 1.5rem;
   }
 
-  &__load-more {
+  &__sentinel {
     display: flex;
     justify-content: center;
-    margin-top: 2.5rem;
+    padding: 2rem 0;
+    min-height: 1px;
   }
 
-  &__load-more-btn {
-    padding: 0.75rem 2rem;
-    background: $color-surface;
-    border: 1px solid $color-border;
-    border-radius: $border-radius-md;
-    color: $color-text;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: border-color $transition-base, background $transition-base;
-
-    &:hover:not(:disabled) {
-      border-color: $color-primary;
-      background: $color-surface-elevated;
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+  &__spinner--inline {
+    width: 2rem;
+    height: 2rem;
+    border-width: 2px;
   }
 }
 

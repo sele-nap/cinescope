@@ -189,7 +189,7 @@ useSeoMeta({
     grid-template-columns: 260px 1fr;
     gap: 3rem;
 
-    @media (max-width: 700px) {
+    @media (width <= 700px) {
       grid-template-columns: 1fr;
       padding: 2rem 1rem;
     }
@@ -203,7 +203,7 @@ useSeoMeta({
   &__poster {
     width: 100%;
     border-radius: $border-radius-lg;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 8px 32px rgb(0 0 0 / 60%);
   }
 
   &__poster-placeholder {

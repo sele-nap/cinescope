@@ -71,7 +71,6 @@ const { locale, locales, setLocale } = useI18n()
     letter-spacing: 0.06em;
     background: linear-gradient(135deg, $color-moon 0%, $color-primary 60%, $color-accent 100%);
     background-clip: text;
-    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 

@@ -327,8 +327,18 @@ onUnmounted(() => editor.value?.destroy())
       min-height: 100px;
 
       p { margin: 0 0 0.5rem; }
-      ul { list-style: disc; padding-left: 1.25rem; margin: 0 0 0.5rem; }
-      ol { list-style: decimal; padding-left: 1.25rem; margin: 0 0 0.5rem; }
+
+      ul {
+        list-style: disc;
+        padding-left: 1.25rem;
+        margin: 0 0 0.5rem;
+      }
+
+      ol {
+        list-style: decimal;
+        padding-left: 1.25rem;
+        margin: 0 0 0.5rem;
+      }
       strong { color: $color-text; }
     }
   }
@@ -463,8 +473,18 @@ onUnmounted(() => editor.value?.destroy())
     opacity: 0.85;
 
     :deep(p) { margin: 0 0 0.4rem; }
-    :deep(ul) { list-style: disc; padding-left: 1.25rem; margin: 0 0 0.4rem; }
-    :deep(ol) { list-style: decimal; padding-left: 1.25rem; margin: 0 0 0.4rem; }
+
+    :deep(ul) {
+      list-style: disc;
+      padding-left: 1.25rem;
+      margin: 0 0 0.4rem;
+    }
+
+    :deep(ol) {
+      list-style: decimal;
+      padding-left: 1.25rem;
+      margin: 0 0 0.4rem;
+    }
     :deep(strong) { font-weight: 600; }
     :deep(em) { font-style: italic; }
   }

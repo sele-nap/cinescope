@@ -2,9 +2,11 @@
   <header class="app-header">
     <div class="app-header__inner">
       <NuxtLink to="/" class="app-header__logo">
-        <span class="app-header__logo-icon">✦</span>
+        <span class="app-header__logo-icon" @click.prevent="onLogoClick">✦</span>
         <span class="app-header__logo-text">Cinescope</span>
       </NuxtLink>
+
+      <span class="app-header__cat" title="meow">🐈‍⬛</span>
 
       <div class="app-header__lang">
         <button
@@ -23,6 +25,23 @@
 
 <script setup lang="ts">
 const { locale, locales, setLocale } = useI18n()
+
+const catVisible = useState('cat-easter-egg', () => false)
+const catUrl = useState('cat-url', () => '')
+
+let clickCount = 0
+let resetTimer: ReturnType<typeof setTimeout>
+
+function onLogoClick() {
+  clearTimeout(resetTimer)
+  clickCount++
+  if (clickCount >= 5) {
+    clickCount = 0
+    catUrl.value = `https://cataas.com/cat?t=${Date.now()}`
+    catVisible.value = true
+  }
+  resetTimer = setTimeout(() => { clickCount = 0 }, 1000)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -72,6 +91,20 @@ const { locale, locales, setLocale } = useI18n()
     background: linear-gradient(135deg, $color-moon 0%, $color-primary 60%, $color-accent 100%);
     background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  &__cat {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.1rem;
+    opacity: 0.05;
+    cursor: default;
+    transition: opacity 0.4s ease;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   &__lang {

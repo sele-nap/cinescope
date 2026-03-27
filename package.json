@@ -18,10 +18,18 @@
     "nuxt": "^4.4.2",
     "pinia": "^3.0.4",
     "vue": "^3.5.30",
-    "vue-router": "^5.0.4"
+    "vue-router": "^5.0.4",
+    "vuetify": "^4.0.4",
+    "vuetify-nuxt-module": "^0.19.5"
   },
   "devDependencies": {
+    "@nuxt/test-utils": "^4.0.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
-    "sass": "^1.98.0"
+    "happy-dom": "^20.8.9",
+    "sass": "^1.98.0",
+    "stylelint": "^17.6.0",
+    "stylelint-config-recommended-vue": "^1.6.1",
+    "stylelint-config-standard-scss": "^17.0.0",
+    "vitest": "^4.1.2"
   }
 }

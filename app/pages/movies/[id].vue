@@ -36,7 +36,7 @@
           <p v-if="movie.tagline" class="movie-detail__tagline">{{ movie.tagline }}</p>
 
           <div class="movie-detail__meta">
-            <span class="movie-detail__badge">★ {{ movie.vote_average.toFixed(1) }}</span>
+            <span class="movie-detail__badge">★ {{ movie.vote_average.toFixed(1) }} <span class="movie-detail__vote-count">({{ movie.vote_count.toLocaleString('fr-FR') }} votes)</span></span>
             <span class="movie-detail__badge">{{ movie.release_date?.slice(0, 4) ?? '—' }}</span>
             <span v-if="movie.runtime" class="movie-detail__badge">{{ formatRuntime(movie.runtime) }}</span>
             <span v-if="movie.status" class="movie-detail__badge movie-detail__badge--muted">{{ movie.status }}</span>
@@ -248,6 +248,12 @@ useSeoMeta({
     &--muted {
       color: $color-text-muted;
     }
+  }
+
+  &__vote-count {
+    font-weight: 400;
+    color: $color-text-muted;
+    font-size: 0.8rem;
   }
 
   &__genres {

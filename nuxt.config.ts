@@ -50,4 +50,6 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
   },
+
+  serverDir: './server',
 })

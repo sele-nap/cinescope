@@ -1,7 +1,18 @@
 <template>
   <main class="movie-detail">
-    <div v-if="pending" class="movie-detail__loading">
-      <div class="movie-detail__spinner" />
+    <div v-if="pending" class="movie-detail__skeleton">
+      <div class="movie-detail__skeleton-nav">
+        <v-skeleton-loader type="text" width="60" />
+      </div>
+      <div class="movie-detail__skeleton-body">
+        <v-skeleton-loader type="image" class="movie-detail__skeleton-poster" color="transparent" />
+        <div class="movie-detail__skeleton-info">
+          <v-skeleton-loader type="heading" color="transparent" />
+          <v-skeleton-loader type="text" width="40%" color="transparent" />
+          <v-skeleton-loader type="chip,chip,chip" color="transparent" />
+          <v-skeleton-loader type="paragraph" color="transparent" />
+        </div>
+      </div>
     </div>
 
     <template v-else-if="movie">
@@ -143,20 +154,36 @@ useSeoMeta({
     }
   }
 
-  &__loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 60vh;
+  &__skeleton {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.25rem 2rem 3rem;
   }
 
-  &__spinner {
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 3px solid $color-border;
-    border-top-color: $color-primary;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  &__skeleton-nav {
+    margin-bottom: 2rem;
+  }
+
+  &__skeleton-body {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 3rem;
+
+    @media (width <= 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__skeleton-poster {
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+  }
+
+  &__skeleton-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-top: 0.5rem;
   }
 
   &__backdrop {
@@ -383,7 +410,4 @@ useSeoMeta({
   }
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
 </style>

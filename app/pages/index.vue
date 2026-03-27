@@ -24,8 +24,14 @@
           </h2>
         </div>
 
-        <div v-if="isLoading && movies.length === 0" class="home__loading">
-          <div class="home__spinner" />
+        <div v-if="isLoading && movies.length === 0" class="home__grid">
+          <v-skeleton-loader
+            v-for="n in 20"
+            :key="n"
+            type="image,list-item-two-line"
+            color="transparent"
+            class="movie-card-skeleton"
+          />
         </div>
 
         <p v-else-if="!isLoading && movies.length === 0" class="home__empty">
@@ -250,12 +256,6 @@ await loadTrending()
     color: $color-text;
   }
 
-  &__loading {
-    display: flex;
-    justify-content: center;
-    padding: 4rem 0;
-  }
-
   &__spinner {
     width: 2.5rem;
     height: 2.5rem;
@@ -289,6 +289,11 @@ await loadTrending()
     height: 2rem;
     border-width: 2px;
   }
+}
+
+.movie-card-skeleton {
+  border-radius: $border-radius-md;
+  overflow: hidden;
 }
 
 .movie-card {

@@ -33,7 +33,7 @@ export default defineNuxtConfig({
       },
     },
     moduleOptions: {
-      styles: { configFile: 'assets/styles/vuetify.scss' },
+      styles: 'sass',
     },
   },
 

@@ -78,6 +78,8 @@
           </div>
         </div>
       </div>
+
+      <MovieComments :movie-id="id" />
     </template>
   </main>
 </template>
@@ -300,6 +302,7 @@ useSeoMeta({
   &__cast-section {
     position: relative;
     z-index: 1;
+    background: $color-background;
     border-top: 1px solid $color-border;
     padding: 2.5rem 2rem;
   }

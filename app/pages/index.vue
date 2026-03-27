@@ -2,12 +2,12 @@
   <main class="home">
     <section class="home__hero">
       <div class="home__hero-inner">
-        <h1 class="home__title">Découvrez votre prochain film</h1>
+        <h1 class="home__title">{{ $t('home.title') }}</h1>
         <div class="home__search">
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Rechercher un film..."
+            :placeholder="$t('home.search_placeholder')"
             class="home__search-input"
             @input="onSearchInput"
           />
@@ -20,7 +20,7 @@
       <div class="home__content-inner">
         <div class="home__section-header">
           <h2 class="home__section-title">
-            {{ isSearching ? `Résultats pour "${searchQuery}"` : 'Tendances cette semaine' }}
+            {{ isSearching ? $t('home.results_for', { query: searchQuery }) : $t('home.trending') }}
           </h2>
         </div>
 
@@ -29,7 +29,7 @@
         </div>
 
         <p v-else-if="!isLoading && movies.length === 0" class="home__empty">
-          Aucun film trouvé.
+          {{ $t('home.no_results') }}
         </p>
 
         <div v-else class="home__grid">
@@ -74,6 +74,7 @@
 import { useDebounceFn, useIntersectionObserver } from '@vueuse/core'
 import type { Movie } from '~/types/movie'
 
+const { t } = useI18n()
 const { fetchTrending, searchMovies, getImageUrl } = useTmdb()
 
 const searchQuery = ref('')

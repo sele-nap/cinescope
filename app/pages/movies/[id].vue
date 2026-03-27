@@ -6,7 +6,7 @@
 
     <template v-else-if="movie">
       <div class="movie-detail__nav">
-        <button class="movie-detail__back" @click="router.back()">← Retour</button>
+        <button class="movie-detail__back" @click="router.back()">{{ $t('movie.back') }}</button>
       </div>
 
       <div class="movie-detail__backdrop">
@@ -36,7 +36,7 @@
           <p v-if="movie.tagline" class="movie-detail__tagline">{{ movie.tagline }}</p>
 
           <div class="movie-detail__meta">
-            <span class="movie-detail__badge">★ {{ movie.vote_average.toFixed(1) }} <span class="movie-detail__vote-count">({{ movie.vote_count.toLocaleString('fr-FR') }} votes)</span></span>
+            <span class="movie-detail__badge">★ {{ movie.vote_average.toFixed(1) }} <span class="movie-detail__vote-count">{{ $t('movie.votes', { count: movie.vote_count.toLocaleString() }) }}</span></span>
             <span class="movie-detail__badge">{{ movie.release_date?.slice(0, 4) ?? '—' }}</span>
             <span v-if="movie.runtime" class="movie-detail__badge">{{ formatRuntime(movie.runtime) }}</span>
             <span v-if="movie.status" class="movie-detail__badge movie-detail__badge--muted">{{ movie.status }}</span>
@@ -51,7 +51,7 @@
           <p v-if="movie.overview" class="movie-detail__overview">{{ movie.overview }}</p>
 
           <div v-if="director" class="movie-detail__director">
-            <span class="movie-detail__director-label">Réalisateur·ice</span>
+            <span class="movie-detail__director-label">{{ $t('movie.director') }}</span>
             <span class="movie-detail__director-name">{{ director.name }}</span>
           </div>
         </div>
@@ -59,7 +59,7 @@
 
       <div v-if="cast.length" class="movie-detail__cast-section">
         <div class="movie-detail__cast-inner">
-          <h2 class="movie-detail__cast-title">Casting</h2>
+          <h2 class="movie-detail__cast-title">{{ $t('movie.cast') }}</h2>
           <div class="movie-detail__cast-grid">
             <div v-for="member in cast" :key="member.id" class="cast-card">
               <div class="cast-card__avatar">
@@ -85,6 +85,7 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { fetchMovieDetails, fetchMovieCredits, getImageUrl } = useTmdb()

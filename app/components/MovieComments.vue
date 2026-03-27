@@ -1,17 +1,17 @@
 <template>
   <section class="comments">
-    <h2 class="comments__title">Commentaires</h2>
+    <h2 class="comments__title">{{ $t('comments.title') }}</h2>
 
     <form class="comments__form" novalidate @submit.prevent="submitComment">
       <div class="comments__field">
-        <label class="comments__label" for="username">Nom d'utilisateur</label>
+        <label class="comments__label" for="username">{{ $t('comments.username') }}</label>
         <input
           id="username"
           v-model="form.username"
           type="text"
           class="comments__input"
           :class="{ 'comments__input--error': v$.username.$error }"
-          placeholder="VotreNom"
+          :placeholder="$t('comments.username_placeholder')"
           @blur="v$.username.$touch()"
         />
         <span v-if="v$.username.$error" class="comments__error">
@@ -20,17 +20,17 @@
       </div>
 
       <div class="comments__field">
-        <label class="comments__label">Message</label>
+        <label class="comments__label">{{ $t('comments.message') }}</label>
         <ClientOnly>
           <div
             class="comments__editor-wrap"
             :class="{ 'comments__editor-wrap--error': v$.messageText.$error }"
           >
             <div class="comments__toolbar">
-              <button type="button" :class="{ active: editor?.isActive('bold') }" @click="editor?.chain().focus().toggleBold().run()"><strong>G</strong></button>
-              <button type="button" :class="{ active: editor?.isActive('italic') }" @click="editor?.chain().focus().toggleItalic().run()"><em>I</em></button>
-              <button type="button" :class="{ active: editor?.isActive('bulletList') }" @click="editor?.chain().focus().toggleBulletList().run()">• Liste</button>
-              <button type="button" :class="{ active: editor?.isActive('orderedList') }" @click="editor?.chain().focus().toggleOrderedList().run()">1. Liste</button>
+              <button type="button" :class="{ active: editor?.isActive('bold') }" @click="editor?.chain().focus().toggleBold().run()"><strong>{{ $t('comments.toolbar_bold') }}</strong></button>
+              <button type="button" :class="{ active: editor?.isActive('italic') }" @click="editor?.chain().focus().toggleItalic().run()"><em>{{ $t('comments.toolbar_italic') }}</em></button>
+              <button type="button" :class="{ active: editor?.isActive('bulletList') }" @click="editor?.chain().focus().toggleBulletList().run()">{{ $t('comments.toolbar_bullet') }}</button>
+              <button type="button" :class="{ active: editor?.isActive('orderedList') }" @click="editor?.chain().focus().toggleOrderedList().run()">{{ $t('comments.toolbar_ordered') }}</button>
             </div>
             <EditorContent
               class="comments__editor"
@@ -42,7 +42,7 @@
             <textarea
               v-model="form.message"
               class="comments__textarea"
-              placeholder="Votre avis sur ce film..."
+              :placeholder="$t('comments.message_placeholder')"
               rows="4"
             />
           </template>
@@ -61,7 +61,7 @@
       </div>
 
       <div class="comments__field">
-        <label class="comments__label">Note <span class="comments__rating-value">{{ form.rating }}/10</span></label>
+        <label class="comments__label">{{ $t('comments.rating') }} <span class="comments__rating-value">{{ form.rating }}/10</span></label>
         <div class="comments__stars">
           <button
             v-for="n in 10"
@@ -75,7 +75,7 @@
       </div>
 
       <button type="submit" class="comments__submit" :disabled="isSubmitting">
-        {{ isSubmitting ? 'Envoi…' : 'Publier' }}
+        {{ isSubmitting ? $t('comments.submitting') : $t('comments.submit') }}
       </button>
     </form>
 
@@ -90,7 +90,7 @@
       </article>
     </div>
 
-    <p v-else class="comments__empty">Aucun commentaire pour l'instant. Soyez le premier !</p>
+    <p v-else class="comments__empty">{{ $t('comments.empty') }}</p>
   </section>
 </template>
 
@@ -100,6 +100,8 @@ import StarterKit from '@tiptap/starter-kit'
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, maxLength, helpers, alpha } from '@vuelidate/validators'
 import { useCommentsStore } from '~/stores/comments'
+
+const { t } = useI18n()
 
 const props = defineProps<{ movieId: number }>()
 
@@ -128,7 +130,7 @@ const editor = useEditor({
 const messageText = computed(() => editor.value?.getText() ?? form.message)
 
 const alphaNumFr = helpers.withMessage(
-  'Uniquement des lettres et chiffres',
+  () => t('validation.alpha_num'),
   (value: unknown) => {
     if (typeof value !== 'string' || value.trim() === '') return true
     return /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,!?()\-'"]+$/.test(value)
@@ -137,18 +139,18 @@ const alphaNumFr = helpers.withMessage(
 
 const rules = {
   username: {
-    required: helpers.withMessage('Champ requis', required),
-    alpha: helpers.withMessage('Uniquement des lettres', alpha),
-    minLength: helpers.withMessage('3 caractères minimum', minLength(3)),
-    maxLength: helpers.withMessage('50 caractères maximum', maxLength(50)),
+    required: helpers.withMessage(() => t('validation.required'), required),
+    alpha: helpers.withMessage(() => t('validation.alpha_only'), alpha),
+    minLength: helpers.withMessage(() => t('validation.min_length', { min: 3 }), minLength(3)),
+    maxLength: helpers.withMessage(() => t('validation.max_length', { max: 50 }), maxLength(50)),
   },
   messageText: {
-    required: helpers.withMessage('Champ requis', (value: unknown) =>
+    required: helpers.withMessage(() => t('validation.required'), (value: unknown) =>
       typeof value === 'string' && value.trim().length > 0,
     ),
     alphaNumFr,
-    minLength: helpers.withMessage('3 caractères minimum', minLength(3)),
-    maxLength: helpers.withMessage('500 caractères maximum', maxLength(500)),
+    minLength: helpers.withMessage(() => t('validation.min_length', { min: 3 }), minLength(3)),
+    maxLength: helpers.withMessage(() => t('validation.max_length', { max: 500 }), maxLength(500)),
   },
 }
 

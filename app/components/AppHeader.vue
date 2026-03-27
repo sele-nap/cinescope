@@ -5,9 +5,25 @@
         <span class="app-header__logo-icon">✦</span>
         <span class="app-header__logo-text">Cinescope</span>
       </NuxtLink>
+
+      <div class="app-header__lang">
+        <button
+          v-for="loc in locales"
+          :key="loc.code"
+          class="app-header__lang-btn"
+          :class="{ 'app-header__lang-btn--active': loc.code === locale }"
+          @click="setLocale(loc.code)"
+        >
+          {{ loc.code.toUpperCase() }}
+        </button>
+      </div>
     </div>
   </header>
 </template>
+
+<script setup lang="ts">
+const { locale, locales, setLocale } = useI18n()
+</script>
 
 <style lang="scss" scoped>
 @use '~/assets/styles/variables' as *;
@@ -55,6 +71,34 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  &__lang {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  &__lang-btn {
+    background: none;
+    border: 1px solid $color-border;
+    border-radius: $border-radius-sm;
+    color: $color-text-muted;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.6rem;
+    transition: color $transition-base, border-color $transition-base;
+
+    &:hover {
+      color: $color-text;
+      border-color: $color-text-muted;
+    }
+
+    &--active {
+      color: $color-primary;
+      border-color: $color-primary;
+    }
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <footer class="app-footer">
     <p class="app-footer__text">
-      Powered by
+      {{ $t('footer.powered_by') }}
       <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer">TMDB</a>
     </p>
   </footer>

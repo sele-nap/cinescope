@@ -2,10 +2,21 @@ import type { Movie, MovieDetails, MovieCredits, TmdbResponse } from '~/types/mo
 
 export function useTmdb() {
   const config = useRuntimeConfig()
+  const { locale } = useNuxtApp().$i18n
+
+  const localeMap: Record<string, string> = {
+    fr: 'fr-FR',
+    en: 'en-US',
+  }
+
+  function getLanguage(): string {
+    const code = locale.value as string
+    return localeMap[code] ?? code
+  }
 
   async function fetchTmdb<T>(path: string, params: Record<string, string | number> = {}): Promise<T> {
     return $fetch<T>(`/api/tmdb/${path}`, {
-      params: { language: 'fr-FR', ...params },
+      params: { language: getLanguage(), ...params },
     })
   }
 

@@ -16,7 +16,18 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'vuetify-nuxt-module',
     '@nuxt/eslint',
+    '@nuxtjs/i18n',
   ],
+
+  i18n: {
+    locales: [
+      { code: 'fr', language: 'fr-FR', file: 'fr.json', name: 'Français' },
+      { code: 'en', language: 'en-US', file: 'en.json', name: 'English' },
+    ],
+    defaultLocale: 'fr',
+    langDir: 'i18n/locales',
+    strategy: 'no_prefix',
+  },
 
   vuetify: {
     vuetifyOptions: {

@@ -15,24 +15,16 @@
 </template>
 
 <script setup lang="ts">
-import { useEventListener } from '@vueuse/core'
+import { useWindowScroll } from '@vueuse/core'
 import AppHeader from '~/components/AppHeader.vue'
 import AppFooter from '~/components/AppFooter.vue'
 
-const scrollY = ref(0)
-
-// Vuetify scrolle sur .v-main, pas sur window
-useEventListener(document, 'scroll', () => {
-  const main = document.querySelector('.v-main')
-  scrollY.value = main ? main.scrollTop : window.scrollY
-}, { capture: true })
+const { y: scrollY } = useWindowScroll()
 
 const showScrollTop = computed(() => scrollY.value > 400)
 
 function scrollToTop() {
-  const main = document.querySelector('.v-main')
-  if (main) main.scrollTo({ top: 0, behavior: 'smooth' })
-  else window.scrollTo({ top: 0, behavior: 'smooth' })
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 </script>
 

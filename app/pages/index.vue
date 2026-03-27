@@ -40,9 +40,10 @@
 
         <div v-else class="home__grid">
           <NuxtLink
-            v-for="movie in movies"
+            v-for="(movie, index) in movies"
             :key="movie.id"
             :to="`/movies/${movie.id}`"
+            :style="{ animationDelay: `${(index % 20) * 40}ms` }"
             class="movie-card"
           >
             <div class="movie-card__poster">

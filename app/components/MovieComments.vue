@@ -101,7 +101,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, maxLength, helpers, alpha } from '@vuelidate/validators'
 import { useCommentsStore } from '~/stores/comments'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const props = defineProps<{ movieId: number }>()
 
@@ -180,12 +180,13 @@ async function submitComment() {
 }
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat('fr-FR', {
+  return new Intl.DateTimeFormat(locale.value, {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
+    hour12: false,
   }).format(new Date(iso))
 }
 

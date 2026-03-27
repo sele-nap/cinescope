@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'Cinescope',
+      link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }],
     },
   },
 

@@ -1,5 +1,6 @@
 import type { Movie, MovieDetails, MovieCredits, TmdbResponse } from '~/types/movie'
 
+/** Wrapper autour de l'API TMDB — tous les appels passent par le proxy serveur /api/tmdb. */
 export function useTmdb() {
   const config = useRuntimeConfig()
   const { locale } = useNuxtApp().$i18n
@@ -14,12 +15,17 @@ export function useTmdb() {
     return localeMap[code] ?? code
   }
 
+  /** Appel générique vers le proxy TMDB avec injection automatique de la langue courante. */
   async function fetchTmdb<T>(path: string, params: Record<string, string | number> = {}): Promise<T> {
     return $fetch<T>(`/api/tmdb/${path}`, {
       params: { language: getLanguage(), ...params },
     })
   }
 
+  /**
+   * Construit l'URL d'une image TMDB.
+   * @returns null si path est absent (poster/backdrop optionnel).
+   */
   function getImageUrl(path: string | null, size: 'w200' | 'w300' | 'w500' | 'w780' | 'original' = 'w500'): string | null {
     if (!path) return null
     return `${config.public.tmdbImageBaseUrl}/${size}${path}`

@@ -74,7 +74,7 @@
 import { useDebounceFn, useIntersectionObserver } from '@vueuse/core'
 import type { Movie } from '~/types/movie'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { fetchTrending, searchMovies, getImageUrl } = useTmdb()
 
 const searchQuery = ref('')
@@ -139,6 +139,20 @@ function clearSearch() {
   currentPage.value = 1
   loadTrending()
 }
+
+watch(locale, async () => {
+  movies.value = []
+  currentPage.value = 1
+  if (isSearching.value) {
+    isLoading.value = true
+    const data = await searchMovies(searchQuery.value)
+    movies.value = data.results
+    totalPages.value = data.total_pages
+    isLoading.value = false
+  } else {
+    await loadTrending()
+  }
+})
 
 await loadTrending()
 </script>

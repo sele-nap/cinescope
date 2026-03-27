@@ -85,15 +85,20 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { fetchMovieDetails, fetchMovieCredits, getImageUrl } = useTmdb()
 
 const id = Number(route.params.id)
 
-const { data: movie, pending } = await useAsyncData(`movie-${id}`, () => fetchMovieDetails(id))
-const { data: credits } = await useAsyncData(`credits-${id}`, () => fetchMovieCredits(id))
+const { data: movie, pending, refresh: refreshMovie } = await useAsyncData(`movie-${id}`, () => fetchMovieDetails(id))
+const { data: credits, refresh: refreshCredits } = await useAsyncData(`credits-${id}`, () => fetchMovieCredits(id))
+
+watch(locale, () => {
+  refreshMovie()
+  refreshCredits()
+})
 
 const cast = computed(() => credits.value?.cast.slice(0, 12) ?? [])
 const director = computed(() => credits.value?.crew.find((m) => m.job === 'Director') ?? null)

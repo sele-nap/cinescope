@@ -111,7 +111,7 @@ async function loadMore() {
 
 useIntersectionObserver(sentinel, ([entry]) => {
   if (entry.isIntersecting) loadMore()
-})
+}, { rootMargin: '300px' })
 
 const doSearch = useDebounceFn(async (query: string) => {
   if (!query.trim()) {
@@ -298,6 +298,7 @@ await loadTrending()
   flex-direction: column;
   gap: 0.75rem;
   transition: transform $transition-base;
+  animation: card-in 0.35s ease both;
 
   &:hover {
     transform: translateY(-4px);
@@ -378,8 +379,18 @@ await loadTrending()
 }
 
 @keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 </style>

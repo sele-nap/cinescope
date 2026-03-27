@@ -357,7 +357,7 @@ onUnmounted(() => editor.value?.destroy())
 
   &__rating-value {
     font-weight: 700;
-    color: $color-accent;
+    color: $color-moon;
     text-transform: none;
     letter-spacing: 0;
   }
@@ -371,17 +371,18 @@ onUnmounted(() => editor.value?.destroy())
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: $color-border;
+    color: rgba($color-moon, 0.2);
     cursor: pointer;
     padding: 0;
     transition: color $transition-base, transform $transition-base;
 
     &--active {
-      color: $color-accent;
+      color: $color-moon;
+      filter: drop-shadow(0 0 4px rgba($color-moon, 0.4));
     }
 
     &:hover {
-      transform: scale(1.15);
+      transform: scale(1.2);
     }
   }
 
@@ -446,7 +447,7 @@ onUnmounted(() => editor.value?.destroy())
   &__rating {
     font-size: 0.82rem;
     font-weight: 600;
-    color: $color-accent;
+    color: $color-moon;
   }
 
   &__date {

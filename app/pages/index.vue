@@ -164,8 +164,8 @@ await loadTrending()
   min-height: 100vh;
 
   &__hero {
-    background: linear-gradient(180deg, rgba($color-primary, 0.08) 0%, transparent 100%);
-    border-bottom: 1px solid $color-border;
+    background: linear-gradient(180deg, rgba($color-moon, 0.05) 0%, rgba($color-primary, 0.06) 50%, transparent 100%);
+    border-bottom: 1px solid rgba($color-moon, 0.1);
     padding: 3rem 2rem 2.5rem;
   }
 
@@ -328,28 +328,30 @@ await loadTrending()
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
-    color: $color-text-muted;
+    font-size: 2.5rem;
+    color: rgba($color-moon, 0.3);
   }
 
   &__rating {
     position: absolute;
     bottom: 0.5rem;
     right: 0.5rem;
-    background: rgba($color-background, 0.85);
-    backdrop-filter: blur(4px);
+    background: rgba($color-background, 0.88);
+    backdrop-filter: blur(6px);
     border-radius: $border-radius-sm;
-    padding: 0.2rem 0.45rem;
+    padding: 0.2rem 0.5rem;
     font-size: 0.75rem;
     font-weight: 600;
     color: $color-text;
     display: flex;
     align-items: center;
-    gap: 0.2rem;
+    gap: 0.25rem;
+    border: 1px solid rgba($color-moon, 0.12);
   }
 
   &__rating-star {
-    color: $color-accent;
+    color: $color-moon;
+    font-size: 0.8rem;
   }
 
   &__info {

@@ -36,7 +36,7 @@
           <p v-if="movie.tagline" class="movie-detail__tagline">{{ movie.tagline }}</p>
 
           <div class="movie-detail__meta">
-            <span class="movie-detail__badge">★ {{ movie.vote_average.toFixed(1) }} <span class="movie-detail__vote-count">{{ $t('movie.votes', { count: movie.vote_count.toLocaleString() }) }}</span></span>
+            <span class="movie-detail__badge movie-detail__badge--rating">✦ {{ movie.vote_average.toFixed(1) }} <span class="movie-detail__vote-count">{{ $t('movie.votes', { count: movie.vote_count.toLocaleString() }) }}</span></span>
             <span class="movie-detail__badge">{{ movie.release_date?.slice(0, 4) ?? '—' }}</span>
             <span v-if="movie.runtime" class="movie-detail__badge">{{ formatRuntime(movie.runtime) }}</span>
             <span v-if="movie.status" class="movie-detail__badge movie-detail__badge--muted">{{ movie.status }}</span>
@@ -214,8 +214,9 @@ useSeoMeta({
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
-    color: $color-text-muted;
+    font-size: 4rem;
+    color: rgba($color-moon, 0.3);
+    border: 1px solid rgba($color-moon, 0.08);
   }
 
   &__info {
@@ -245,16 +246,23 @@ useSeoMeta({
   }
 
   &__badge {
-    padding: 0.3rem 0.75rem;
-    background: $color-surface;
-    border: 1px solid $color-border;
-    border-radius: $border-radius-sm;
+    padding: 0.3rem 0.8rem;
+    background: rgba($color-surface, 0.8);
+    border: 1px solid rgba($color-moon, 0.12);
+    border-radius: $border-radius-md;
     font-size: 0.85rem;
     color: $color-text;
     font-weight: 500;
+    backdrop-filter: blur(4px);
 
     &--muted {
       color: $color-text-muted;
+    }
+
+    &--rating {
+      color: $color-moon;
+      border-color: rgba($color-moon, 0.25);
+      background: rgba($color-moon, 0.06);
     }
   }
 
@@ -271,12 +279,12 @@ useSeoMeta({
   }
 
   &__genre {
-    padding: 0.25rem 0.75rem;
-    background: rgba($color-primary, 0.12);
-    border: 1px solid rgba($color-primary, 0.3);
+    padding: 0.25rem 0.9rem;
+    background: rgba($color-moon, 0.06);
+    border: 1px solid rgba($color-moon, 0.2);
     border-radius: 999px;
     font-size: 0.8rem;
-    color: $color-primary;
+    color: $color-moon;
   }
 
   &__overview {
@@ -358,7 +366,7 @@ useSeoMeta({
 
   &__placeholder {
     font-size: 1.5rem;
-    color: $color-text-muted;
+    color: rgba($color-moon, 0.35);
   }
 
   &__name {

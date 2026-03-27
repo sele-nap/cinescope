@@ -59,15 +59,17 @@ const { locale, locales, setLocale } = useI18n()
   }
 
   &__logo-icon {
-    font-size: 1.5rem;
-    color: $color-primary;
+    font-size: 1.75rem;
+    color: $color-moon;
+    filter: drop-shadow(0 0 6px rgba($color-primary, 0.6));
+    line-height: 1;
   }
 
   &__logo-text {
     font-size: 1.25rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
-    background: linear-gradient(135deg, $color-primary, $color-accent);
+    letter-spacing: 0.06em;
+    background: linear-gradient(135deg, $color-moon 0%, $color-primary 60%, $color-accent 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -96,8 +98,9 @@ const { locale, locales, setLocale } = useI18n()
     }
 
     &--active {
-      color: $color-primary;
-      border-color: $color-primary;
+      color: $color-moon;
+      border-color: $color-moon;
+      box-shadow: 0 0 8px rgba($color-primary, 0.3);
     }
   }
 }

@@ -2,6 +2,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
+  app: {
+    head: {
+      title: 'Cinescope',
+    },
+  },
+
   runtimeConfig: {
     tmdbApiKey: process.env.TMDB_API_KEY,
     public: {

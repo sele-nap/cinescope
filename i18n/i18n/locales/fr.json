@@ -1,0 +1,40 @@
+{
+  "home": {
+    "title": "Découvrez votre prochain film",
+    "search_placeholder": "Rechercher un film...",
+    "trending": "Tendances cette semaine",
+    "results_for": "Résultats pour \"{query}\"",
+    "no_results": "Aucun film trouvé."
+  },
+  "movie": {
+    "back": "← Retour",
+    "director": "Réalisateur·ice",
+    "cast": "Casting",
+    "votes": "{count} votes"
+  },
+  "comments": {
+    "title": "Commentaires",
+    "username": "Nom d'utilisateur",
+    "username_placeholder": "VotreNom",
+    "message": "Message",
+    "message_placeholder": "Votre avis sur ce film...",
+    "rating": "Note",
+    "submit": "Publier",
+    "submitting": "Envoi…",
+    "empty": "Aucun commentaire pour l'instant. Soyez le premier !",
+    "toolbar_bold": "G",
+    "toolbar_italic": "I",
+    "toolbar_bullet": "• Liste",
+    "toolbar_ordered": "1. Liste"
+  },
+  "validation": {
+    "required": "Champ requis",
+    "alpha_only": "Uniquement des lettres",
+    "alpha_num": "Uniquement des lettres et chiffres",
+    "min_length": "{min} caractères minimum",
+    "max_length": "{max} caractères maximum"
+  },
+  "footer": {
+    "powered_by": "Powered by"
+  }
+}

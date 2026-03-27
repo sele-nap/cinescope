@@ -1,0 +1,40 @@
+{
+  "home": {
+    "title": "Discover your next movie",
+    "search_placeholder": "Search for a movie...",
+    "trending": "Trending this week",
+    "results_for": "Results for \"{query}\"",
+    "no_results": "No movies found."
+  },
+  "movie": {
+    "back": "← Back",
+    "director": "Director",
+    "cast": "Cast",
+    "votes": "{count} votes"
+  },
+  "comments": {
+    "title": "Comments",
+    "username": "Username",
+    "username_placeholder": "YourName",
+    "message": "Message",
+    "message_placeholder": "Your thoughts on this movie...",
+    "rating": "Rating",
+    "submit": "Post",
+    "submitting": "Sending…",
+    "empty": "No comments yet. Be the first!",
+    "toolbar_bold": "B",
+    "toolbar_italic": "I",
+    "toolbar_bullet": "• List",
+    "toolbar_ordered": "1. List"
+  },
+  "validation": {
+    "required": "This field is required",
+    "alpha_only": "Letters only",
+    "alpha_num": "Letters and numbers only",
+    "min_length": "Minimum {min} characters",
+    "max_length": "Maximum {max} characters"
+  },
+  "footer": {
+    "powered_by": "Powered by"
+  }
+}

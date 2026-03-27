@@ -23,9 +23,14 @@
     "vuetify-nuxt-module": "^0.19.5"
   },
   "devDependencies": {
+    "@nuxt/eslint": "^1.15.2",
     "@nuxt/test-utils": "^4.0.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.8.0",
     "happy-dom": "^20.8.9",
+    "prettier": "^3.8.1",
     "sass": "^1.98.0",
     "stylelint": "^17.6.0",
     "stylelint-config-recommended-vue": "^1.6.1",

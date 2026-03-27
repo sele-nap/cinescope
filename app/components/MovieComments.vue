@@ -20,22 +20,42 @@
       </div>
 
       <div class="comments__field">
-        <label class="comments__label" for="message">Message</label>
-        <textarea
-          id="message"
-          v-model="form.message"
-          class="comments__textarea"
-          :class="{ 'comments__input--error': v$.message.$error }"
-          placeholder="Votre avis sur ce film..."
-          rows="4"
-          @blur="v$.message.$touch()"
-        />
+        <label class="comments__label">Message</label>
+        <ClientOnly>
+          <div
+            class="comments__editor-wrap"
+            :class="{ 'comments__editor-wrap--error': v$.messageText.$error }"
+          >
+            <div class="comments__toolbar">
+              <button type="button" :class="{ active: editor?.isActive('bold') }" @click="editor?.chain().focus().toggleBold().run()"><strong>G</strong></button>
+              <button type="button" :class="{ active: editor?.isActive('italic') }" @click="editor?.chain().focus().toggleItalic().run()"><em>I</em></button>
+              <button type="button" :class="{ active: editor?.isActive('bulletList') }" @click="editor?.chain().focus().toggleBulletList().run()">• Liste</button>
+              <button type="button" :class="{ active: editor?.isActive('orderedList') }" @click="editor?.chain().focus().toggleOrderedList().run()">1. Liste</button>
+            </div>
+            <EditorContent
+              class="comments__editor"
+              :editor="editor"
+              @blur="v$.messageText.$touch()"
+            />
+          </div>
+          <template #fallback>
+            <textarea
+              v-model="form.message"
+              class="comments__textarea"
+              placeholder="Votre avis sur ce film..."
+              rows="4"
+            />
+          </template>
+        </ClientOnly>
         <div class="comments__field-footer">
-          <span v-if="v$.message.$error" class="comments__error">
-            {{ v$.message.$errors[0].$message }}
+          <span v-if="v$.messageText.$error" class="comments__error">
+            {{ v$.messageText.$errors[0].$message }}
           </span>
-          <span class="comments__char-count" :class="{ 'comments__char-count--warn': form.message.length > 450 }">
-            {{ form.message.length }}/500
+          <span
+            class="comments__char-count"
+            :class="{ 'comments__char-count--warn': messageText.length > 450 }"
+          >
+            {{ messageText.length }}/500
           </span>
         </div>
       </div>
@@ -66,7 +86,7 @@
           <span class="comment-item__rating">★ {{ comment.rating }}/10</span>
           <time class="comment-item__date">{{ formatDate(comment.createdAt) }}</time>
         </div>
-        <p class="comment-item__message">{{ comment.message }}</p>
+        <div class="comment-item__message" v-html="comment.message" />
       </article>
     </div>
 
@@ -75,8 +95,10 @@
 </template>
 
 <script setup lang="ts">
+import { useEditor, EditorContent } from '@tiptap/vue-3'
+import StarterKit from '@tiptap/starter-kit'
 import { useVuelidate } from '@vuelidate/core'
-import { required, minLength, maxLength, helpers, alpha, alphaNum } from '@vuelidate/validators'
+import { required, minLength, maxLength, helpers, alpha } from '@vuelidate/validators'
 import { useCommentsStore } from '~/stores/comments'
 
 const props = defineProps<{ movieId: number }>()
@@ -95,6 +117,24 @@ const form = reactive({
 
 const isSubmitting = ref(false)
 
+const editor = useEditor({
+  content: '',
+  extensions: [StarterKit],
+  onUpdate({ editor: e }) {
+    form.message = e.getHTML()
+  },
+})
+
+const messageText = computed(() => editor.value?.getText() ?? form.message)
+
+const alphaNumFr = helpers.withMessage(
+  'Uniquement des lettres et chiffres',
+  (value: unknown) => {
+    if (typeof value !== 'string' || value.trim() === '') return true
+    return /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,!?()\-'"]+$/.test(value)
+  },
+)
+
 const rules = {
   username: {
     required: helpers.withMessage('Champ requis', required),
@@ -102,15 +142,17 @@ const rules = {
     minLength: helpers.withMessage('3 caractères minimum', minLength(3)),
     maxLength: helpers.withMessage('50 caractères maximum', maxLength(50)),
   },
-  message: {
-    required: helpers.withMessage('Champ requis', required),
-    alphaNum: helpers.withMessage('Uniquement des lettres et chiffres', alphaNum),
+  messageText: {
+    required: helpers.withMessage('Champ requis', (value: unknown) =>
+      typeof value === 'string' && value.trim().length > 0,
+    ),
+    alphaNumFr,
     minLength: helpers.withMessage('3 caractères minimum', minLength(3)),
     maxLength: helpers.withMessage('500 caractères maximum', maxLength(500)),
   },
 }
 
-const v$ = useVuelidate(rules, form)
+const v$ = useVuelidate(rules, { username: toRef(form, 'username'), messageText })
 
 async function submitComment() {
   const valid = await v$.value.$validate()
@@ -130,6 +172,7 @@ async function submitComment() {
   form.username = ''
   form.message = ''
   form.rating = 5
+  editor.value?.commands.clearContent()
   v$.value.$reset()
   isSubmitting.value = false
 }
@@ -143,6 +186,8 @@ function formatDate(iso: string): string {
     minute: '2-digit',
   }).format(new Date(iso))
 }
+
+onUnmounted(() => editor.value?.destroy())
 </script>
 
 <style lang="scss" scoped>
@@ -216,6 +261,73 @@ function formatDate(iso: string): string {
     &--error {
       border-color: $color-error !important;
       box-shadow: 0 0 0 3px rgba($color-error, 0.15) !important;
+    }
+  }
+
+  &__editor-wrap {
+    border: 1px solid $color-border;
+    border-radius: $border-radius-md;
+    overflow: hidden;
+    transition: border-color $transition-base, box-shadow $transition-base;
+
+    &:focus-within {
+      border-color: $color-primary;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
+    }
+
+    &--error {
+      border-color: $color-error !important;
+      box-shadow: 0 0 0 3px rgba($color-error, 0.15) !important;
+    }
+  }
+
+  &__toolbar {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    background: $color-surface-elevated;
+    border-bottom: 1px solid $color-border;
+
+    button {
+      background: none;
+      border: 1px solid transparent;
+      border-radius: $border-radius-sm;
+      color: $color-text-muted;
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0.2rem 0.5rem;
+      transition: color $transition-base, background $transition-base;
+
+      &:hover {
+        color: $color-text;
+        background: rgba($color-primary, 0.1);
+      }
+
+      &.active {
+        color: $color-primary;
+        border-color: rgba($color-primary, 0.3);
+        background: rgba($color-primary, 0.1);
+      }
+    }
+  }
+
+  &__editor {
+    background: $color-background;
+    min-height: 120px;
+    padding: 0.75rem 1rem;
+    color: $color-text;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    cursor: text;
+
+    :deep(.tiptap) {
+      outline: none;
+      min-height: 100px;
+
+      p { margin: 0 0 0.5rem; }
+      ul { list-style: disc; padding-left: 1.25rem; margin: 0 0 0.5rem; }
+      ol { list-style: decimal; padding-left: 1.25rem; margin: 0 0 0.5rem; }
+      strong { color: $color-text; }
     }
   }
 
@@ -346,7 +458,12 @@ function formatDate(iso: string): string {
     line-height: 1.6;
     color: $color-text;
     opacity: 0.85;
-    white-space: pre-wrap;
+
+    :deep(p) { margin: 0 0 0.4rem; }
+    :deep(ul) { list-style: disc; padding-left: 1.25rem; margin: 0 0 0.4rem; }
+    :deep(ol) { list-style: decimal; padding-left: 1.25rem; margin: 0 0 0.4rem; }
+    :deep(strong) { font-weight: 600; }
+    :deep(em) { font-style: italic; }
   }
 }
 </style>

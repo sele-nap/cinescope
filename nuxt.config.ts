@@ -63,6 +63,12 @@ export default defineNuxtConfig({
     },
   },
 
+  vite: {
+    ssr: {
+      noExternal: ['@tinymce/tinymce-vue', 'tinymce'],
+    },
+  },
+
   css: ['~/assets/styles/main.scss'],
 
   typescript: {

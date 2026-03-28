@@ -26,15 +26,10 @@
             class="comments__editor-wrap"
             :class="{ 'comments__editor-wrap--error': v$.messageText.$error }"
           >
-            <div class="comments__toolbar">
-              <button type="button" :class="{ active: editor?.isActive('bold') }" @click="editor?.chain().focus().toggleBold().run()"><strong>{{ $t('comments.toolbar_bold') }}</strong></button>
-              <button type="button" :class="{ active: editor?.isActive('italic') }" @click="editor?.chain().focus().toggleItalic().run()"><em>{{ $t('comments.toolbar_italic') }}</em></button>
-              <button type="button" :class="{ active: editor?.isActive('bulletList') }" @click="editor?.chain().focus().toggleBulletList().run()">{{ $t('comments.toolbar_bullet') }}</button>
-              <button type="button" :class="{ active: editor?.isActive('orderedList') }" @click="editor?.chain().focus().toggleOrderedList().run()">{{ $t('comments.toolbar_ordered') }}</button>
-            </div>
-            <EditorContent
-              class="comments__editor"
-              :editor="editor"
+            <Editor
+              v-model="form.message"
+              tinymce-script-src="/tinymce/tinymce.min.js"
+              :init="editorInit"
               @blur="v$.messageText.$touch()"
             />
           </div>
@@ -95,10 +90,9 @@
 </template>
 
 <script setup lang="ts">
-import { useEditor, EditorContent } from '@tiptap/vue-3'
-import StarterKit from '@tiptap/starter-kit'
+const Editor = defineAsyncComponent(() => import('@tinymce/tinymce-vue'))
 import { useVuelidate } from '@vuelidate/core'
-import { required, minLength, maxLength, helpers, alpha } from '@vuelidate/validators'
+import { required, minLength, maxLength, helpers } from '@vuelidate/validators'
 import { useCommentsStore } from '~/stores/comments'
 
 const { t, locale } = useI18n()
@@ -119,16 +113,41 @@ const form = reactive({
 
 const isSubmitting = ref(false)
 
-const editor = useEditor({
-  content: '',
-  extensions: [StarterKit],
-  onUpdate({ editor: e }) {
-    form.message = e.getHTML()
+// Texte brut (sans balises HTML) utilisé pour la validation et le compteur de caractères
+const messageText = computed(() => form.message.replace(/<[^>]*>/g, '').trim())
+
+const editorInit = {
+  height: 200,
+  menubar: false,
+  plugins: ['lists'],
+  toolbar: 'bold italic | bullist numlist | removeformat',
+  skin: 'oxide-dark',
+  content_css: 'dark',
+  content_style: `
+    body {
+      background-color: #0d0a15;
+      color: #efe9e0;
+      font-family: inherit;
+      font-size: 15px;
+      padding: 8px 12px;
+      margin: 0;
+    }
+  `,
+  branding: false,
+  statusbar: false,
+  resize: false,
+}
+
+// Validateur personnalisé : lettres uniquement, accents inclus (é, è, à, É…)
+const alphaFr = helpers.withMessage(
+  () => t('validation.alpha_only'),
+  (value: unknown) => {
+    if (typeof value !== 'string') return false
+    return /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(value)
   },
-})
+)
 
-const messageText = computed(() => editor.value?.getText() ?? form.message)
-
+// Validateur pour le message : lettres, chiffres, ponctuation courante
 const alphaNumFr = helpers.withMessage(
   () => t('validation.alpha_num'),
   (value: unknown) => {
@@ -140,7 +159,7 @@ const alphaNumFr = helpers.withMessage(
 const rules = {
   username: {
     required: helpers.withMessage(() => t('validation.required'), required),
-    alpha: helpers.withMessage(() => t('validation.alpha_only'), alpha),
+    alphaFr,
     minLength: helpers.withMessage(() => t('validation.min_length', { min: 3 }), minLength(3)),
     maxLength: helpers.withMessage(() => t('validation.max_length', { max: 50 }), maxLength(50)),
   },
@@ -174,7 +193,6 @@ async function submitComment() {
   form.username = ''
   form.message = ''
   form.rating = 5
-  editor.value?.commands.clearContent()
   v$.value.$reset()
   isSubmitting.value = false
 }
@@ -189,8 +207,6 @@ function formatDate(iso: string): string {
     hour12: false,
   }).format(new Date(iso))
 }
-
-onUnmounted(() => editor.value?.destroy())
 </script>
 
 <style lang="scss" scoped>
@@ -282,65 +298,34 @@ onUnmounted(() => editor.value?.destroy())
       border-color: $color-error !important;
       box-shadow: 0 0 0 3px rgba($color-error, 0.15) !important;
     }
-  }
 
-  &__toolbar {
-    display: flex;
-    gap: 0.25rem;
-    padding: 0.5rem 0.75rem;
-    background: $color-surface-elevated;
-    border-bottom: 1px solid $color-border;
+    :deep(.tox-tinymce) {
+      border: none;
+      border-radius: 0;
+    }
 
-    button {
-      background: none;
-      border: 1px solid transparent;
-      border-radius: $border-radius-sm;
+    :deep(.tox:not(.tox-tinymce-inline) .tox-editor-header) {
+      background: $color-surface-elevated;
+      border-bottom: 1px solid $color-border;
+      box-shadow: none;
+    }
+
+    :deep(.tox .tox-toolbar__primary) {
+      background: $color-surface-elevated;
+    }
+
+    :deep(.tox .tox-tbtn) {
       color: $color-text-muted;
-      cursor: pointer;
-      font-size: 0.85rem;
-      padding: 0.2rem 0.5rem;
-      transition: color $transition-base, background $transition-base;
 
       &:hover {
+        background: rgba($color-primary, 0.1);
         color: $color-text;
-        background: rgba($color-primary, 0.1);
-      }
-
-      &.active {
-        color: $color-primary;
-        border-color: rgba($color-primary, 0.3);
-        background: rgba($color-primary, 0.1);
       }
     }
-  }
 
-  &__editor {
-    background: $color-background;
-    min-height: 120px;
-    padding: 0.75rem 1rem;
-    color: $color-text;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    cursor: text;
-
-    :deep(.tiptap) {
-      outline: none;
-      min-height: 100px;
-
-      p { margin: 0 0 0.5rem; }
-
-      ul {
-        list-style: disc;
-        padding-left: 1.25rem;
-        margin: 0 0 0.5rem;
-      }
-
-      ol {
-        list-style: decimal;
-        padding-left: 1.25rem;
-        margin: 0 0 0.5rem;
-      }
-      strong { color: $color-text; }
+    :deep(.tox .tox-tbtn--enabled) {
+      background: rgba($color-primary, 0.15);
+      color: $color-primary;
     }
   }
 

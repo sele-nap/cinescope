@@ -18,6 +18,9 @@ logs
 .env.*
 !.env.example
 
+# TinyMCE static assets (generated from node_modules/tinymce)
+public/tinymce
+
 # OS
 .DS_Store
 Thumbs.db

@@ -149,6 +149,7 @@ const editorInit = {
       margin: 0;
     }
   `,
+  license_key: 'gpl',
   branding: false,
   statusbar: false,
   resize: false,

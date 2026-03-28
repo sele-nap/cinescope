@@ -19,7 +19,7 @@
   "dependencies": {
     "@nuxtjs/i18n": "^10.2.4",
     "@pinia/nuxt": "^0.11.3",
-    "@tinymce/tinymce-vue": "^6.3.0",
+    "@tinymce/tinymce-vue": "^5.1.1",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
     "@vueuse/core": "^14.2.1",
@@ -27,7 +27,7 @@
     "dompurify": "^3.3.3",
     "nuxt": "^4.4.2",
     "pinia": "^3.0.4",
-    "tinymce": "^8.3.2",
+    "tinymce": "^6.8.6",
     "vue": "^3.5.30",
     "vue-router": "^5.0.4",
     "vuetify": "^4.0.4",

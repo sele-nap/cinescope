@@ -29,8 +29,8 @@
   },
   "validation": {
     "required": "Champ requis",
-    "alpha_only": "Uniquement des lettres",
-    "alpha_num": "Uniquement des lettres et chiffres",
+    "alpha_only": "Lettres uniquement (accents autorisés, pas de chiffres)",
+    "alpha_num": "Lettres, chiffres et ponctuation courante uniquement",
     "min_length": "{min} caractères minimum",
     "max_length": "{max} caractères maximum"
   },

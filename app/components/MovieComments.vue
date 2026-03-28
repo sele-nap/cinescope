@@ -15,7 +15,7 @@
           @blur="v$.username.$touch()"
         />
         <span v-if="v$.username.$error" class="comments__error">
-          {{ v$.username.$errors[0].$message }}
+          {{ v$.username.$errors[0]?.$message }}
         </span>
       </div>
 
@@ -44,7 +44,7 @@
         </ClientOnly>
         <div class="comments__field-footer">
           <span v-if="v$.messageText.$error" class="comments__error">
-            {{ v$.messageText.$errors[0].$message }}
+            {{ v$.messageText.$errors[0]?.$message }}
           </span>
           <span
             class="comments__char-count"

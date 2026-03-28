@@ -113,8 +113,14 @@ const form = reactive({
 
 const isSubmitting = ref(false)
 
-// Texte brut (sans balises HTML) utilisé pour la validation et le compteur de caractères
-const messageText = computed(() => form.message.replace(/<[^>]*>/g, '').trim())
+// Texte brut (sans balises HTML ni entités HTML) utilisé pour la validation et le compteur de caractères
+const messageText = computed(() =>
+  form.message
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&[a-z#0-9]+;/gi, '')
+    .trim(),
+)
 
 const editorInit = {
   height: 200,

@@ -2,7 +2,7 @@
   <header class="app-header">
     <div class="app-header__inner">
       <NuxtLink to="/" class="app-header__logo">
-        <span class="app-header__logo-icon" @click.prevent="onLogoClick">✦</span>
+        <span class="app-header__logo-icon">✦</span>
         <span class="app-header__logo-text">Cinescope</span>
       </NuxtLink>
 
@@ -26,22 +26,6 @@
 <script setup lang="ts">
 const { locale, locales, setLocale } = useI18n()
 
-const catVisible = useState('cat-easter-egg', () => false)
-const catUrl = useState('cat-url', () => '')
-
-let clickCount = 0
-let resetTimer: ReturnType<typeof setTimeout>
-
-function onLogoClick() {
-  clearTimeout(resetTimer)
-  clickCount++
-  if (clickCount >= 5) {
-    clickCount = 0
-    catUrl.value = `https://cataas.com/cat?t=${Date.now()}`
-    catVisible.value = true
-  }
-  resetTimer = setTimeout(() => { clickCount = 0 }, 1000)
-}
 </script>
 
 <style lang="scss" scoped>

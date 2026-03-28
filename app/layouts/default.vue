@@ -6,16 +6,7 @@
     </v-main>
     <AppFooter />
 
-    <Transition name="cat-overlay">
-      <div v-if="catVisible" class="cat-overlay" @click="catVisible = false" @keydown.esc="catVisible = false">
-        <div class="cat-overlay__box">
-          <img :src="catUrl" alt="🐱" class="cat-overlay__img" />
-          <p class="cat-overlay__caption">you found the secret cat ✦</p>
-        </div>
-      </div>
-    </Transition>
-
-    <Transition name="scroll-top">
+<Transition name="scroll-top">
       <button v-if="showScrollTop" class="scroll-top-btn" aria-label="Back to top" @click="scrollToTop">
         ↑
       </button>
@@ -27,9 +18,6 @@
 import { useWindowScroll } from '@vueuse/core'
 import AppHeader from '~/components/AppHeader.vue'
 import AppFooter from '~/components/AppFooter.vue'
-
-const catVisible = useState('cat-easter-egg', () => false)
-const catUrl = useState('cat-url', () => '')
 
 const { y: scrollY } = useWindowScroll()
 
@@ -43,46 +31,6 @@ function scrollToTop() {
 <style lang="scss" scoped>
 @use '~/assets/styles/variables' as *;
 
-.cat-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  background: rgba($color-background, 0.85);
-  backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  &__box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-  }
-
-  &__img {
-    width: min(380px, 80vw);
-    border-radius: $border-radius-lg;
-    box-shadow: 0 16px 48px rgb(0 0 0 / 60%);
-  }
-
-  &__caption {
-    font-size: 0.95rem;
-    color: $color-moon;
-    letter-spacing: 0.04em;
-  }
-}
-
-.cat-overlay-enter-active,
-.cat-overlay-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.cat-overlay-enter-from,
-.cat-overlay-leave-to {
-  opacity: 0;
-}
 
 .scroll-top-btn {
   position: fixed;

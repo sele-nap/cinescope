@@ -99,6 +99,7 @@
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, maxLength, helpers, between } from '@vuelidate/validators'
 import { useCommentsStore } from '~/stores/comments'
+import { isAlphaFr, isAlphaNumFr } from '~/utils/validators'
 
 const Editor = defineAsyncComponent(() => import('@tinymce/tinymce-vue'))
 
@@ -151,23 +152,8 @@ const editorInit = {
   resize: false,
 }
 
-// Validateur personnalisé : lettres uniquement, accents inclus (é, è, à, É…)
-const alphaFr = helpers.withMessage(
-  () => t('validation.alpha_only'),
-  (value: unknown) => {
-    if (typeof value !== 'string') return false
-    return /^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(value)
-  },
-)
-
-// Validateur pour le message : lettres, chiffres, ponctuation courante
-const alphaNumFr = helpers.withMessage(
-  () => t('validation.alpha_num'),
-  (value: unknown) => {
-    if (typeof value !== 'string' || value.trim() === '') return true
-    return /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,!?()\-'"]+$/.test(value)
-  },
-)
+const alphaFr = helpers.withMessage(() => t('validation.alpha_only'), isAlphaFr)
+const alphaNumFr = helpers.withMessage(() => t('validation.alpha_num'), isAlphaNumFr)
 
 const rules = {
   username: {

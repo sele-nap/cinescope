@@ -1,17 +1,13 @@
-import { alpha, minLength, maxLength } from '@vuelidate/validators'
+import { minLength, maxLength } from '@vuelidate/validators'
+import { isAlphaFr, isAlphaNumFr } from '../utils/validators'
 
-const isAlpha = (v: string) => alpha.$validator(v, {} as never, {} as never)
-
-const alphaNumFr = (value: string): boolean => {
-  if (value.trim() === '') return true
-  return /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,!?()\-'"]+$/.test(value)
-}
-
-describe('username validation', () => {
-  it('accepts letters only and rejects alphanumeric or special characters', () => {
-    expect(isAlpha('Alice')).toBe(true)
-    expect(isAlpha('Alice123')).toBe(false)
-    expect(isAlpha('Alice!')).toBe(false)
+describe('username validation (isAlphaFr)', () => {
+  it('accepts letters with accents and rejects digits or special characters', () => {
+    expect(isAlphaFr('Alice')).toBe(true)
+    expect(isAlphaFr('Élodie')).toBe(true)
+    expect(isAlphaFr('Jean-Pierre')).toBe(false) // tiret non autorisé
+    expect(isAlphaFr('Alice123')).toBe(false)
+    expect(isAlphaFr('Alice!')).toBe(false)
   })
 
   it('enforces min 3 and max 50 characters', () => {
@@ -21,11 +17,12 @@ describe('username validation', () => {
   })
 })
 
-describe('message validation (alphaNumFr)', () => {
+describe('message validation (isAlphaNumFr)', () => {
   it('accepts French text with punctuation and rejects HTML or special characters', () => {
-    expect(alphaNumFr('Très bon film, bravo !')).toBe(true)
-    expect(alphaNumFr('<script>alert(1)</script>')).toBe(false)
-    expect(alphaNumFr('Hello @ World')).toBe(false)
+    expect(isAlphaNumFr('Très bon film, bravo !')).toBe(true)
+    expect(isAlphaNumFr('<script>alert(1)</script>')).toBe(false)
+    expect(isAlphaNumFr('Hello @ World')).toBe(false)
+    expect(isAlphaNumFr('')).toBe(true) // vide géré par required
   })
 
   it('enforces min 3 and max 500 characters', () => {

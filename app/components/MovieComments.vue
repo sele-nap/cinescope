@@ -96,10 +96,11 @@
 </template>
 
 <script setup lang="ts">
-const Editor = defineAsyncComponent(() => import('@tinymce/tinymce-vue'))
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, maxLength, helpers, between } from '@vuelidate/validators'
 import { useCommentsStore } from '~/stores/comments'
+
+const Editor = defineAsyncComponent(() => import('@tinymce/tinymce-vue'))
 
 const { t, locale } = useI18n()
 

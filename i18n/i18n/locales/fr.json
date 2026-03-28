@@ -4,10 +4,12 @@
     "search_placeholder": "Rechercher un film...",
     "trending": "Tendances cette semaine",
     "results_for": "Résultats pour \"{query}\"",
-    "no_results": "Aucun film trouvé."
+    "no_results": "Aucun film trouvé.",
+    "error": "Une erreur est survenue. Vérifiez votre connexion et réessayez."
   },
   "movie": {
     "back": "← Retour",
+    "error": "Impossible de charger ce film. Vérifiez votre connexion et réessayez.",
     "director": "Réalisateur·ice",
     "cast": "Casting",
     "votes": "{count} votes"

@@ -4,10 +4,12 @@
     "search_placeholder": "Search for a movie...",
     "trending": "Trending this week",
     "results_for": "Results for \"{query}\"",
-    "no_results": "No movies found."
+    "no_results": "No movies found.",
+    "error": "Something went wrong. Check your connection and try again."
   },
   "movie": {
     "back": "← Back",
+    "error": "Could not load this movie. Check your connection and try again.",
     "director": "Director",
     "cast": "Cast",
     "votes": "{count} votes"

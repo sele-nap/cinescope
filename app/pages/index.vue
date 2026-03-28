@@ -34,6 +34,8 @@
           />
         </div>
 
+        <p v-else-if="apiError" class="home__error">{{ $t(apiError) }}</p>
+
         <p v-else-if="!isLoading && movies.length === 0" class="home__empty">
           {{ $t('home.no_results') }}
         </p>
@@ -87,6 +89,7 @@ const { fetchTrending, searchMovies, getImageUrl } = useTmdb()
 const searchQuery = ref('')
 const movies = ref<Movie[]>([])
 const isLoading = ref(false)
+const apiError = ref<string | null>(null)
 const currentPage = ref(1)
 const totalPages = ref(1)
 
@@ -97,23 +100,38 @@ const hasMorePages = computed(() => currentPage.value < totalPages.value)
 
 async function loadTrending() {
   isLoading.value = true
-  const data = await fetchTrending('week')
-  movies.value = data.results
-  totalPages.value = data.total_pages
-  currentPage.value = 1
-  isLoading.value = false
+  apiError.value = null
+  try {
+    const data = await fetchTrending('week')
+    movies.value = data.results
+    totalPages.value = data.total_pages
+    currentPage.value = 1
+  }
+  catch {
+    apiError.value = 'home.error'
+  }
+  finally {
+    isLoading.value = false
+  }
 }
 
 async function loadMore() {
   if (!hasMorePages.value || isLoading.value) return
   isLoading.value = true
-  const nextPage = currentPage.value + 1
-  const data = await (isSearching.value
-    ? searchMovies(searchQuery.value, nextPage)
-    : fetchTrending('week', nextPage))
-  movies.value.push(...data.results)
-  currentPage.value = nextPage
-  isLoading.value = false
+  try {
+    const nextPage = currentPage.value + 1
+    const data = await (isSearching.value
+      ? searchMovies(searchQuery.value, nextPage)
+      : fetchTrending('week', nextPage))
+    movies.value.push(...data.results)
+    currentPage.value = nextPage
+  }
+  catch {
+    apiError.value = 'home.error'
+  }
+  finally {
+    isLoading.value = false
+  }
 }
 
 useIntersectionObserver(sentinel, ([entry]) => {
@@ -127,11 +145,19 @@ const doSearch = useDebounceFn(async (query: string) => {
     return loadTrending()
   }
   isLoading.value = true
-  const data = await searchMovies(query)
-  movies.value = data.results
-  currentPage.value = 1
-  totalPages.value = data.total_pages
-  isLoading.value = false
+  apiError.value = null
+  try {
+    const data = await searchMovies(query)
+    movies.value = data.results
+    currentPage.value = 1
+    totalPages.value = data.total_pages
+  }
+  catch {
+    apiError.value = 'home.error'
+  }
+  finally {
+    isLoading.value = false
+  }
 }, 400)
 
 function onSearchInput() {
@@ -269,6 +295,12 @@ await loadTrending()
   &__empty {
     text-align: center;
     color: $color-text-muted;
+    padding: 4rem 0;
+  }
+
+  &__error {
+    text-align: center;
+    color: $color-error;
     padding: 4rem 0;
   }
 

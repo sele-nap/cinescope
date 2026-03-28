@@ -20,13 +20,14 @@
       </div>
 
       <div class="comments__field">
-        <label class="comments__label">{{ $t('comments.message') }}</label>
+        <label class="comments__label" for="comment-message">{{ $t('comments.message') }}</label>
         <ClientOnly>
           <div
             class="comments__editor-wrap"
             :class="{ 'comments__editor-wrap--error': v$.messageText.$error }"
           >
             <Editor
+              id="comment-message"
               v-model="form.message"
               tinymce-script-src="/tinymce/tinymce.min.js"
               :init="editorInit"
@@ -56,11 +57,11 @@
       </div>
 
       <div class="comments__field">
-        <label class="comments__label">
+        <label id="rating-label" class="comments__label">
           {{ $t('comments.rating') }}
           <span v-if="form.rating > 0" class="comments__rating-value">{{ form.rating }}/10</span>
         </label>
-        <div class="comments__stars" @blur="v$.rating.$touch()">
+        <div class="comments__stars" role="group" aria-labelledby="rating-label" @blur="v$.rating.$touch()">
           <button
             v-for="n in 10"
             :key="n"

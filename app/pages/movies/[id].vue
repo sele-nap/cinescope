@@ -15,6 +15,10 @@
       </div>
     </div>
 
+    <div v-else-if="error" class="movie-detail__error">
+      {{ $t('movie.error') }}
+    </div>
+
     <template v-else-if="movie">
       <div class="movie-detail__nav">
         <button class="movie-detail__back" @click="router.back()">{{ $t('movie.back') }}</button>
@@ -103,7 +107,7 @@ const { fetchMovieDetails, fetchMovieCredits, getImageUrl } = useTmdb()
 
 const id = Number(route.params.id)
 
-const { data: movie, pending, refresh: refreshMovie } = await useAsyncData(`movie-${id}`, () => fetchMovieDetails(id))
+const { data: movie, pending, error, refresh: refreshMovie } = await useAsyncData(`movie-${id}`, () => fetchMovieDetails(id))
 const { data: credits, refresh: refreshCredits } = await useAsyncData(`credits-${id}`, () => fetchMovieCredits(id))
 
 watch(locale, () => {
@@ -152,6 +156,15 @@ useSeoMeta({
     &:hover {
       color: $color-text;
     }
+  }
+
+  &__error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    color: $color-error;
+    font-size: 0.95rem;
   }
 
   &__skeleton {

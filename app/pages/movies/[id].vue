@@ -21,7 +21,10 @@
 
     <template v-else-if="movie">
       <div class="movie-detail__nav">
-        <button class="movie-detail__back" @click="router.back()">{{ $t('movie.back') }}</button>
+        <button class="movie-detail__back" @click="router.back()">
+          <span class="movie-detail__back-arrow">←</span>
+          {{ $t('movie.back') }}
+        </button>
       </div>
 
       <div class="movie-detail__backdrop">
@@ -145,17 +148,32 @@ useSeoMeta({
   }
 
   &__back {
-    background: none;
-    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba($color-surface, 0.7);
+    border: 1px solid rgba($color-moon, 0.12);
+    border-radius: $border-radius-md;
+    backdrop-filter: blur(8px);
     color: $color-text-muted;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 500;
     cursor: pointer;
-    padding: 0.25rem 0;
-    transition: color $transition-base;
+    padding: 0.5rem 1rem;
+    transition: color $transition-base, border-color $transition-base, background $transition-base, transform $transition-base;
 
     &:hover {
       color: $color-text;
+      border-color: rgba($color-moon, 0.3);
+      background: rgba($color-surface-elevated, 0.85);
+      transform: translateX(-3px);
     }
+  }
+
+  &__back-arrow {
+    font-size: 1rem;
+    line-height: 1;
+    transition: transform $transition-base;
   }
 
   &__error {

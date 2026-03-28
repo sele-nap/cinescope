@@ -8,7 +8,7 @@
     "error": "Une erreur est survenue. Vérifiez votre connexion et réessayez."
   },
   "movie": {
-    "back": "← Retour",
+    "back": "Retour",
     "error": "Impossible de charger ce film. Vérifiez votre connexion et réessayez.",
     "director": "Réalisateur·ice",
     "cast": "Casting",

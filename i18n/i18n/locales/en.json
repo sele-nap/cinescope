@@ -8,7 +8,7 @@
     "error": "Something went wrong. Check your connection and try again."
   },
   "movie": {
-    "back": "← Back",
+    "back": "Back",
     "error": "Could not load this movie. Check your connection and try again.",
     "director": "Director",
     "cast": "Cast",

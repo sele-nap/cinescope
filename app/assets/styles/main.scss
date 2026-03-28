@@ -22,6 +22,23 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.15s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+
+img.twemoji {
+  height: 1em;
+  width: 1em;
+  vertical-align: -0.125em;
+  display: inline-block;
+}
+
 a {
   color: $color-primary;
   text-decoration: none;

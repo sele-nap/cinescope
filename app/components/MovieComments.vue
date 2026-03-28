@@ -88,7 +88,7 @@
           <span class="comment-item__rating">★ {{ comment.rating }}/10</span>
           <time class="comment-item__date">{{ formatDate(comment.createdAt) }}</time>
         </div>
-        <div class="comment-item__message" v-html="comment.message" />
+        <div class="comment-item__message" v-html="sanitize(comment.message)" />
       </article>
     </div>
 
@@ -97,6 +97,7 @@
 </template>
 
 <script setup lang="ts">
+import DOMPurify from 'dompurify'
 import { useVuelidate } from '@vuelidate/core'
 import { required, minLength, maxLength, helpers, between } from '@vuelidate/validators'
 import { useCommentsStore } from '~/stores/comments'
@@ -198,6 +199,12 @@ async function submitComment() {
   form.rating = 0
   v$.value.$reset()
   isSubmitting.value = false
+}
+
+// DOMPurify est browser-only — retourne le texte brut côté SSR
+function sanitize(html: string): string {
+  if (!import.meta.client) return ''
+  return DOMPurify.sanitize(html, { ALLOWED_TAGS: ['p', 'strong', 'em', 'ul', 'ol', 'li', 'br'] })
 }
 
 function formatDate(iso: string): string {

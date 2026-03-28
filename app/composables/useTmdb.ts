@@ -41,10 +41,6 @@ export function useTmdb() {
     return `${config.public.tmdbImageBaseUrl}/${size}${path}`
   }
 
-  function fetchPopular(page = 1) {
-    return fetchTmdb<TmdbResponse<Movie>>('movie/popular', { page })
-  }
-
   /** @param timeWindow - `day` pour les tendances du jour, `week` pour la semaine. */
   function fetchTrending(timeWindow: 'day' | 'week' = 'week', page = 1) {
     return fetchTmdb<TmdbResponse<Movie>>(`trending/movie/${timeWindow}`, { page })
@@ -66,7 +62,6 @@ export function useTmdb() {
 
   return {
     getImageUrl,
-    fetchPopular,
     fetchTrending,
     searchMovies,
     fetchMovieDetails,

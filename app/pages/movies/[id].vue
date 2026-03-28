@@ -96,7 +96,7 @@
 </template>
 
 <script setup lang="ts">
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { fetchMovieDetails, fetchMovieCredits, getImageUrl } = useTmdb()

@@ -81,7 +81,7 @@
 import { useDebounceFn, useIntersectionObserver } from '@vueuse/core'
 import type { Movie } from '~/types/movie'
 
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 const { fetchTrending, searchMovies, getImageUrl } = useTmdb()
 
 const searchQuery = ref('')

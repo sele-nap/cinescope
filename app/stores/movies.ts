@@ -1,10 +1,8 @@
 import { defineStore } from 'pinia'
-import type { Movie, MovieDetails } from '~/types/movie'
+import type { Movie } from '~/types/movie'
 
 interface MoviesState {
   movies: Movie[]
-  currentMovie: MovieDetails | null
-  isLoading: boolean
   searchQuery: string
   currentPage: number
   totalPages: number
@@ -17,8 +15,6 @@ interface MoviesState {
 export const useMoviesStore = defineStore('movies', {
   state: (): MoviesState => ({
     movies: [],
-    currentMovie: null,
-    isLoading: false,
     searchQuery: '',
     currentPage: 1,
     totalPages: 1,

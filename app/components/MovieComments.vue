@@ -149,6 +149,7 @@ const editorInit = {
       margin: 0;
     }
   `,
+  auto_focus: false,
   branding: false,
   statusbar: false,
   resize: false,

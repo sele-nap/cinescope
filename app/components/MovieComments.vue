@@ -56,17 +56,23 @@
       </div>
 
       <div class="comments__field">
-        <label class="comments__label">{{ $t('comments.rating') }} <span class="comments__rating-value">{{ form.rating }}/10</span></label>
-        <div class="comments__stars">
+        <label class="comments__label">
+          {{ $t('comments.rating') }}
+          <span v-if="form.rating > 0" class="comments__rating-value">{{ form.rating }}/10</span>
+        </label>
+        <div class="comments__stars" @blur="v$.rating.$touch()">
           <button
             v-for="n in 10"
             :key="n"
             type="button"
             class="comments__star"
             :class="{ 'comments__star--active': n <= form.rating }"
-            @click="form.rating = n"
+            @click="form.rating = n; v$.rating.$touch()"
           >★</button>
         </div>
+        <span v-if="v$.rating.$error" class="comments__error">
+          {{ v$.rating.$errors[0]?.$message }}
+        </span>
       </div>
 
       <button type="submit" class="comments__submit" :disabled="isSubmitting">
@@ -92,7 +98,7 @@
 <script setup lang="ts">
 const Editor = defineAsyncComponent(() => import('@tinymce/tinymce-vue'))
 import { useVuelidate } from '@vuelidate/core'
-import { required, minLength, maxLength, helpers } from '@vuelidate/validators'
+import { required, minLength, maxLength, helpers, between } from '@vuelidate/validators'
 import { useCommentsStore } from '~/stores/comments'
 
 const { t, locale } = useI18n()
@@ -108,7 +114,7 @@ const comments = computed(() => commentsStore.getCommentsByMovieId(props.movieId
 const form = reactive({
   username: '',
   message: '',
-  rating: 5,
+  rating: 0,
 })
 
 const isSubmitting = ref(false)
@@ -177,9 +183,12 @@ const rules = {
     minLength: helpers.withMessage(() => t('validation.min_length', { min: 3 }), minLength(3)),
     maxLength: helpers.withMessage(() => t('validation.max_length', { max: 500 }), maxLength(500)),
   },
+  rating: {
+    between: helpers.withMessage(() => t('validation.rating_required'), between(1, 10)),
+  },
 }
 
-const v$ = useVuelidate(rules, { username: toRef(form, 'username'), messageText })
+const v$ = useVuelidate(rules, { username: toRef(form, 'username'), messageText, rating: toRef(form, 'rating') })
 
 async function submitComment() {
   const valid = await v$.value.$validate()
@@ -198,7 +207,7 @@ async function submitComment() {
 
   form.username = ''
   form.message = ''
-  form.rating = 5
+  form.rating = 0
   v$.value.$reset()
   isSubmitting.value = false
 }

@@ -32,7 +32,8 @@
     "alpha_only": "Letters only (accents allowed, no numbers)",
     "alpha_num": "Letters, numbers and common punctuation only",
     "min_length": "Minimum {min} characters",
-    "max_length": "Maximum {max} characters"
+    "max_length": "Maximum {max} characters",
+    "rating_required": "Please select a rating"
   },
   "footer": {
     "powered_by": "Powered by"

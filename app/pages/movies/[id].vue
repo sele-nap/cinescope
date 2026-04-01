@@ -130,6 +130,8 @@ function formatRuntime(minutes: number): string {
 useSeoMeta({
   title: () => movie.value ? `${movie.value.title} — Cinescope` : 'Cinescope',
 })
+
+onMounted(() => window.scrollTo({ top: 0, behavior: 'instant' }))
 </script>
 
 <style lang="scss" scoped>

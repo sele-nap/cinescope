@@ -83,18 +83,6 @@
 import { useDebounceFn, useIntersectionObserver } from '@vueuse/core'
 import type { Movie } from '~/types/movie'
 
-definePageMeta({ keepalive: true })
-
-const scrollY = ref(0)
-
-onDeactivated(() => {
-  scrollY.value = window.scrollY
-})
-
-onActivated(() => {
-  setTimeout(() => window.scrollTo({ top: scrollY.value, behavior: 'instant' }), 50)
-})
-
 const { locale } = useI18n()
 const { fetchTrending, searchMovies, getImageUrl } = useTmdb()
 
@@ -199,7 +187,21 @@ watch(locale, async () => {
   }
 })
 
-await loadTrending()
+const savedScrollY = ref<number | null>(null)
+
+onBeforeRouteLeave(() => {
+  savedScrollY.value = window.scrollY
+})
+
+onActivated(() => {
+  if (savedScrollY.value === null) return
+  const y = savedScrollY.value
+  // Apply immediately and again after the page transition (150ms) completes
+  nextTick(() => window.scrollTo({ top: y, behavior: 'instant' }))
+  setTimeout(() => window.scrollTo({ top: y, behavior: 'instant' }), 200)
+})
+
+onMounted(() => loadTrending())
 </script>
 
 <style lang="scss" scoped>

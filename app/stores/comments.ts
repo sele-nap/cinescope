@@ -43,8 +43,12 @@ export const useCommentsStore = defineStore('comments', {
      */
     loadFromStorage(): void {
       const stored = localStorage.getItem('cinescope_comments')
-      if (stored) {
+      if (!stored) return
+      try {
         this.comments = JSON.parse(stored)
+      }
+      catch {
+        localStorage.removeItem('cinescope_comments')
       }
     },
 

@@ -178,10 +178,18 @@ watch(locale, async () => {
   currentPage.value = 1
   if (isSearching.value) {
     isLoading.value = true
-    const data = await searchMovies(searchQuery.value)
-    movies.value = data.results
-    totalPages.value = data.total_pages
-    isLoading.value = false
+    apiError.value = null
+    try {
+      const data = await searchMovies(searchQuery.value)
+      movies.value = data.results
+      totalPages.value = data.total_pages
+    }
+    catch {
+      apiError.value = 'home.error'
+    }
+    finally {
+      isLoading.value = false
+    }
   } else {
     await loadTrending()
   }

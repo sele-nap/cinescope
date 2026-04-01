@@ -174,6 +174,7 @@ const rules = {
     maxLength: helpers.withMessage(() => t('validation.max_length', { max: 500 }), maxLength(500)),
   },
   rating: {
+    required: helpers.withMessage(() => t('validation.rating_required'), (value: unknown) => typeof value === 'number' && value > 0),
     between: helpers.withMessage(() => t('validation.rating_required'), between(1, 10)),
   },
 }

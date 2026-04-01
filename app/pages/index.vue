@@ -83,6 +83,18 @@
 import { useDebounceFn, useIntersectionObserver } from '@vueuse/core'
 import type { Movie } from '~/types/movie'
 
+definePageMeta({ keepalive: true })
+
+const scrollY = ref(0)
+
+onDeactivated(() => {
+  scrollY.value = window.scrollY
+})
+
+onActivated(() => {
+  setTimeout(() => window.scrollTo({ top: scrollY.value, behavior: 'instant' }), 50)
+})
+
 const { locale } = useI18n()
 const { fetchTrending, searchMovies, getImageUrl } = useTmdb()
 

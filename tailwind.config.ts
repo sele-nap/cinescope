@@ -21,6 +21,9 @@ export default {
         'text-base': '#ede8dc',
         'text-muted': '#8a7fa0',
         border: '#2e2847',
+        moon: '#d6c9b0',
+        error: '#cf6679',
+        warning: '#c9a44b',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
@@ -30,8 +33,14 @@ export default {
         md: '8px',
         lg: '16px',
       },
-      transitionDuration: {
-        base: '200ms',
+      keyframes: {
+        'card-in': {
+          from: { opacity: '0', transform: 'translateY(16px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        'card-in': 'card-in 0.35s ease both',
       },
     },
   },

@@ -1,63 +1,37 @@
 <template>
-  <v-app>
+  <div class="min-h-screen flex flex-col bg-background text-text-base">
     <AppHeader />
-    <v-main>
+    <main class="flex-1">
       <slot />
-    </v-main>
+    </main>
     <AppFooter />
 
-<Transition name="scroll-top">
-      <button v-if="showScrollTop" class="scroll-top-btn" aria-label="Back to top" @click="scrollToTop">
+    <Transition name="scroll-top">
+      <button
+        v-if="showScrollTop"
+        class="fixed bottom-8 right-8 z-50 w-11 h-11 rounded-full border border-moon/25 bg-surface/90 backdrop-blur-sm text-moon text-lg flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-surface-elevated/95 hover:border-moon/50 hover:-translate-y-0.5"
+        aria-label="Back to top"
+        @click="scrollToTop"
+      >
         ↑
       </button>
     </Transition>
-  </v-app>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core'
-import AppHeader from '~/components/AppHeader.vue'
-import AppFooter from '~/components/AppFooter.vue'
 
 const { y: scrollY } = useWindowScroll()
 
-const showScrollTop = computed(() => scrollY.value > 400)
+const showScrollTop = computed<boolean>(() => scrollY.value > 400)
 
-function scrollToTop() {
+function scrollToTop(): void {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 </script>
 
-<style lang="scss" scoped>
-@use '~/assets/styles/variables' as *;
-
-
-.scroll-top-btn {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 50;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 50%;
-  border: 1px solid rgba($color-moon, 0.25);
-  background: rgba($color-surface, 0.9);
-  backdrop-filter: blur(8px);
-  color: $color-moon;
-  font-size: 1.1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background $transition-base, border-color $transition-base, transform $transition-base;
-
-  &:hover {
-    background: rgba($color-surface-elevated, 0.95);
-    border-color: rgba($color-moon, 0.5);
-    transform: translateY(-2px);
-  }
-}
-
+<style scoped>
 .scroll-top-enter-active,
 .scroll-top-leave-active {
   transition: opacity 0.25s ease, transform 0.25s ease;

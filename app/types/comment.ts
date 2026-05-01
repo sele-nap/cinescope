@@ -6,3 +6,9 @@ export interface Comment {
   rating: number
   createdAt: string
 }
+
+export interface CommentFormData {
+  username: string
+  message: string
+  rating: number
+}

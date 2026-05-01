@@ -1,108 +1,121 @@
 <template>
-  <main class="movie-detail">
-    <div v-if="pending" class="movie-detail__skeleton">
-      <div class="movie-detail__skeleton-nav">
-        <v-skeleton-loader type="text" width="60" />
-      </div>
-      <div class="movie-detail__skeleton-body">
-        <v-skeleton-loader type="image" class="movie-detail__skeleton-poster" color="transparent" />
-        <div class="movie-detail__skeleton-info">
-          <v-skeleton-loader type="heading" color="transparent" />
-          <v-skeleton-loader type="text" width="40%" color="transparent" />
-          <v-skeleton-loader type="chip,chip,chip" color="transparent" />
-          <v-skeleton-loader type="paragraph" color="transparent" />
-        </div>
-      </div>
-    </div>
+  <main class="min-h-screen relative">
+    <MovieDetailSkeleton v-if="pending" />
 
-    <div v-else-if="error" class="movie-detail__error">
-      {{ $t('movie.error') }}
+    <div v-else-if="error" class="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+      <p class="text-error text-sm">{{ $t('movie.error') }}</p>
+      <button
+        class="px-6 py-2 border border-border rounded-xl text-text-muted text-sm cursor-pointer bg-transparent transition-colors duration-200 hover:text-text-base hover:border-text-muted"
+        @click="router.back()"
+      >
+        {{ $t('movie.back') }}
+      </button>
     </div>
 
     <template v-else-if="movie">
-      <div class="movie-detail__nav">
-        <button class="movie-detail__back" @click="router.back()">
-          <span class="movie-detail__back-arrow">←</span>
+      <!-- Bouton retour -->
+      <div class="relative z-[2] max-w-[1100px] mx-auto px-8 pt-5">
+        <button
+          class="inline-flex items-center gap-2 bg-surface/70 border border-moon/[0.12] rounded-xl backdrop-blur-md text-text-muted text-sm font-medium cursor-pointer px-4 py-2 transition-all duration-200 hover:text-text-base hover:border-moon/30 hover:bg-surface-elevated/85 hover:-translate-x-0.5"
+          @click="router.back()"
+        >
+          <span class="text-base leading-none">←</span>
           {{ $t('movie.back') }}
         </button>
       </div>
 
-      <div class="movie-detail__backdrop">
+      <!-- Backdrop -->
+      <div class="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
         <img
-          v-if="getImageUrl(movie.backdrop_path, 'original')"
-          :src="getImageUrl(movie.backdrop_path, 'original')!"
+          v-if="backdropUrl"
+          :src="backdropUrl"
           :alt="movie.title"
-          class="movie-detail__backdrop-img"
+          class="w-full h-full object-cover opacity-[0.12]"
         />
-        <div class="movie-detail__backdrop-overlay" />
+        <div
+          class="absolute inset-0"
+          style="background: linear-gradient(to bottom, rgb(14 12 26 / 0.4) 0%, #0e0c1a 70%)"
+        />
       </div>
 
-      <div class="movie-detail__content">
-        <div class="movie-detail__poster-col">
+      <!-- Infos du film -->
+      <div class="relative z-[1] max-w-[1100px] mx-auto px-8 py-12 grid grid-cols-[260px_1fr] gap-12 max-[700px]:grid-cols-1 max-[700px]:px-4 max-[700px]:py-8">
+        <!-- Poster -->
+        <div>
           <img
-            v-if="getImageUrl(movie.poster_path, 'w500')"
-            :src="getImageUrl(movie.poster_path, 'w500')!"
+            v-if="posterUrl"
+            :src="posterUrl"
             :alt="movie.title"
-            class="movie-detail__poster"
+            class="w-full rounded-2xl shadow-[0_8px_32px_rgb(0_0_0/0.6)]"
           />
-          <div v-else class="movie-detail__poster-placeholder">✦</div>
+          <div
+            v-else
+            class="w-full aspect-[2/3] rounded-2xl bg-surface flex items-center justify-center text-6xl text-moon/30 border border-moon/[0.08]"
+          >
+            ✦
+          </div>
         </div>
 
-        <div class="movie-detail__info">
-          <h1 class="movie-detail__title">{{ movie.title }}</h1>
+        <!-- Détails -->
+        <div class="flex flex-col gap-5 pt-2">
+          <h1 class="text-3xl font-bold text-text-base leading-tight">{{ movie.title }}</h1>
 
-          <p v-if="movie.tagline" class="movie-detail__tagline">{{ movie.tagline }}</p>
+          <p v-if="movie.tagline" class="text-base text-accent italic">{{ movie.tagline }}</p>
 
-          <div class="movie-detail__meta">
-            <span class="movie-detail__badge movie-detail__badge--rating">✦ {{ movie.vote_average.toFixed(1) }} <span class="movie-detail__vote-count">{{ $t('movie.votes', { count: movie.vote_count.toLocaleString() }) }}</span></span>
-            <span class="movie-detail__badge">{{ movie.release_date?.slice(0, 4) ?? '—' }}</span>
-            <span v-if="movie.runtime" class="movie-detail__badge">{{ formatRuntime(movie.runtime) }}</span>
-            <span v-if="movie.status" class="movie-detail__badge movie-detail__badge--muted">{{ movie.status }}</span>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 bg-moon/[0.06] border border-moon/25 rounded-xl text-sm text-moon font-medium">
+              ✦ {{ movie.vote_average.toFixed(1) }}
+              <span class="font-normal text-text-muted text-xs">
+                {{ $t('movie.votes', { count: movie.vote_count.toLocaleString() }) }}
+              </span>
+            </span>
+            <span class="px-3 py-1 bg-surface/80 border border-moon/[0.12] rounded-xl text-sm text-text-base font-medium">
+              {{ movie.release_date?.slice(0, 4) ?? '—' }}
+            </span>
+            <span
+              v-if="movie.runtime"
+              class="px-3 py-1 bg-surface/80 border border-moon/[0.12] rounded-xl text-sm text-text-base font-medium"
+            >
+              {{ formatRuntime(movie.runtime) }}
+            </span>
+            <span
+              v-if="movie.status"
+              class="px-3 py-1 bg-surface/80 border border-moon/[0.12] rounded-xl text-sm text-text-muted font-medium"
+            >
+              {{ movie.status }}
+            </span>
           </div>
 
-          <div v-if="movie.genres?.length" class="movie-detail__genres">
-            <span v-for="genre in movie.genres" :key="genre.id" class="movie-detail__genre">
+          <div v-if="movie.genres?.length" class="flex flex-wrap gap-2">
+            <span
+              v-for="genre in movie.genres"
+              :key="genre.id"
+              class="px-4 py-1 bg-moon/[0.06] border border-moon/20 rounded-full text-xs text-moon"
+            >
               {{ genre.name }}
             </span>
           </div>
 
-          <p v-if="movie.overview" class="movie-detail__overview">{{ movie.overview }}</p>
+          <p v-if="movie.overview" class="text-[0.95rem] leading-[1.7] text-text-base opacity-85">
+            {{ movie.overview }}
+          </p>
 
-          <div v-if="director" class="movie-detail__director">
-            <span class="movie-detail__director-label">{{ $t('movie.director') }}</span>
-            <span class="movie-detail__director-name">{{ director.name }}</span>
+          <div v-if="director" class="flex flex-col gap-1">
+            <span class="text-xs uppercase tracking-[0.08em] text-text-muted">{{ $t('movie.director') }}</span>
+            <span class="text-[0.95rem] font-semibold text-text-base">{{ director.name }}</span>
           </div>
         </div>
       </div>
 
-      <div v-if="cast.length" class="movie-detail__cast-section">
-        <div class="movie-detail__cast-inner">
-          <h2 class="movie-detail__cast-title">{{ $t('movie.cast') }}</h2>
-          <div class="movie-detail__cast-grid">
-            <div v-for="member in cast" :key="member.id" class="cast-card">
-              <div class="cast-card__avatar">
-                <img
-                  v-if="getImageUrl(member.profile_path, 'w200')"
-                  :src="getImageUrl(member.profile_path, 'w200')!"
-                  :alt="member.name"
-                  class="cast-card__img"
-                  loading="lazy"
-                />
-                <span v-else class="cast-card__placeholder">✦</span>
-              </div>
-              <p class="cast-card__name">{{ member.name }}</p>
-              <p class="cast-card__character">{{ member.character }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <CastSection v-if="cast.length" :cast="cast" />
       <MovieComments :movie-id="id" />
     </template>
   </main>
 </template>
 
 <script setup lang="ts">
+import type { CastMember, CrewMember } from '~/types/movie'
+
 const { locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -110,16 +123,24 @@ const { fetchMovieDetails, fetchMovieCredits, getImageUrl } = useTmdb()
 
 const id = Number(route.params.id)
 
-const { data: movie, pending, error, refresh: refreshMovie } = await useAsyncData(`movie-${id}`, () => fetchMovieDetails(id))
-const { data: credits, refresh: refreshCredits } = await useAsyncData(`credits-${id}`, () => fetchMovieCredits(id))
+const { data: movie, pending, error, refresh: refreshMovie } = await useAsyncData(
+  `movie-${id}`,
+  () => fetchMovieDetails(id),
+)
+const { data: credits, refresh: refreshCredits } = await useAsyncData(
+  `credits-${id}`,
+  () => fetchMovieCredits(id),
+)
 
-watch(locale, () => {
+watch(locale, (): void => {
   refreshMovie()
   refreshCredits()
 })
 
-const cast = computed(() => credits.value?.cast.slice(0, 12) ?? [])
-const director = computed(() => credits.value?.crew.find((m) => m.job === 'Director') ?? null)
+const cast = computed<CastMember[]>(() => credits.value?.cast.slice(0, 12) ?? [])
+const director = computed<CrewMember | null>(() => credits.value?.crew.find(m => m.job === 'Director') ?? null)
+const posterUrl = computed<string | null>(() => movie.value ? getImageUrl(movie.value.poster_path, 'w500') : null)
+const backdropUrl = computed<string | null>(() => movie.value ? getImageUrl(movie.value.backdrop_path, 'original') : null)
 
 function formatRuntime(minutes: number): string {
   const h = Math.floor(minutes / 60)
@@ -131,316 +152,5 @@ useSeoMeta({
   title: () => movie.value ? `${movie.value.title} — Cinescope` : 'Cinescope',
 })
 
-onMounted(() => window.scrollTo({ top: 0, behavior: 'instant' }))
+onMounted((): void => window.scrollTo({ top: 0, behavior: 'instant' }))
 </script>
-
-<style lang="scss" scoped>
-@use '~/assets/styles/variables' as *;
-
-.movie-detail {
-  min-height: 100vh;
-  position: relative;
-
-  &__nav {
-    position: relative;
-    z-index: 2;
-    padding: 1.25rem 2rem 0;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  &__back {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba($color-surface, 0.7);
-    border: 1px solid rgba($color-moon, 0.12);
-    border-radius: $border-radius-md;
-    backdrop-filter: blur(8px);
-    color: $color-text-muted;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    transition: color $transition-base, border-color $transition-base, background $transition-base, transform $transition-base;
-
-    &:hover {
-      color: $color-text;
-      border-color: rgba($color-moon, 0.3);
-      background: rgba($color-surface-elevated, 0.85);
-      transform: translateX(-3px);
-    }
-  }
-
-  &__back-arrow {
-    font-size: 1rem;
-    line-height: 1;
-    transition: transform $transition-base;
-  }
-
-  &__error {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 60vh;
-    color: $color-error;
-    font-size: 0.95rem;
-  }
-
-  &__skeleton {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 1.25rem 2rem 3rem;
-  }
-
-  &__skeleton-nav {
-    margin-bottom: 2rem;
-  }
-
-  &__skeleton-body {
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: 3rem;
-
-    @media (width <= 700px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  &__skeleton-poster {
-    border-radius: $border-radius-lg;
-    overflow: hidden;
-  }
-
-  &__skeleton-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    padding-top: 0.5rem;
-  }
-
-  &__backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  &__backdrop-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.12;
-  }
-
-  &__backdrop-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba($color-background, 0.4) 0%, $color-background 70%);
-  }
-
-  &__content {
-    position: relative;
-    z-index: 1;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 3rem 2rem;
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: 3rem;
-
-    @media (width <= 700px) {
-      grid-template-columns: 1fr;
-      padding: 2rem 1rem;
-    }
-  }
-
-  &__poster-col {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__poster {
-    width: 100%;
-    border-radius: $border-radius-lg;
-    box-shadow: 0 8px 32px rgb(0 0 0 / 60%);
-  }
-
-  &__poster-placeholder {
-    width: 100%;
-    aspect-ratio: 2 / 3;
-    border-radius: $border-radius-lg;
-    background: $color-surface;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    color: rgba($color-moon, 0.3);
-    border: 1px solid rgba($color-moon, 0.08);
-  }
-
-  &__info {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    padding-top: 0.5rem;
-  }
-
-  &__title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: $color-text;
-    line-height: 1.2;
-  }
-
-  &__tagline {
-    font-size: 1rem;
-    color: $color-accent;
-    font-style: italic;
-  }
-
-  &__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  &__badge {
-    padding: 0.3rem 0.8rem;
-    background: rgba($color-surface, 0.8);
-    border: 1px solid rgba($color-moon, 0.12);
-    border-radius: $border-radius-md;
-    font-size: 0.85rem;
-    color: $color-text;
-    font-weight: 500;
-    backdrop-filter: blur(4px);
-
-    &--muted {
-      color: $color-text-muted;
-    }
-
-    &--rating {
-      color: $color-moon;
-      border-color: rgba($color-moon, 0.25);
-      background: rgba($color-moon, 0.06);
-    }
-  }
-
-  &__vote-count {
-    font-weight: 400;
-    color: $color-text-muted;
-    font-size: 0.8rem;
-  }
-
-  &__genres {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  &__genre {
-    padding: 0.25rem 0.9rem;
-    background: rgba($color-moon, 0.06);
-    border: 1px solid rgba($color-moon, 0.2);
-    border-radius: 999px;
-    font-size: 0.8rem;
-    color: $color-moon;
-  }
-
-  &__overview {
-    font-size: 0.95rem;
-    line-height: 1.7;
-    color: $color-text;
-    opacity: 0.85;
-  }
-
-  &__director {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-
-  &__director-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: $color-text-muted;
-  }
-
-  &__director-name {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: $color-text;
-  }
-
-  &__cast-section {
-    position: relative;
-    z-index: 1;
-    background: $color-background;
-    border-top: 1px solid $color-border;
-    padding: 2.5rem 2rem;
-  }
-
-  &__cast-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  &__cast-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: $color-text;
-    margin-bottom: 1.5rem;
-  }
-
-  &__cast-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 1.25rem;
-  }
-}
-
-.cast-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  text-align: center;
-
-  &__avatar {
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    overflow: hidden;
-    background: $color-surface;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.25rem;
-  }
-
-  &__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  &__placeholder {
-    font-size: 1.5rem;
-    color: rgba($color-moon, 0.35);
-  }
-
-  &__name {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: $color-text;
-    line-height: 1.3;
-  }
-
-  &__character {
-    font-size: 0.72rem;
-    color: $color-text-muted;
-    line-height: 1.3;
-  }
-}
-
-</style>

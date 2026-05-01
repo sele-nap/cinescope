@@ -8,8 +8,6 @@ export default {
     if (to.path === '/' && from?.path?.startsWith('/movies/')) return false
     // Going to a movie page: the movie page scrolls to top itself in onMounted
     if (to.path.startsWith('/movies/')) return false
-    return new Promise(resolve =>
-      setTimeout(() => resolve({ top: 0, behavior: 'instant' }), 150),
-    )
+    return new Promise((resolve) => setTimeout(() => resolve({ top: 0, behavior: 'instant' }), 150))
   },
 } satisfies RouterOptions
